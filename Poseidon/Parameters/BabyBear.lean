@@ -2,6 +2,7 @@ import Poseidon.Hash
 import Poseidon.Profile
 
 open Poseidon
+open Poseidon2 (Hash.Context)
 
 namespace Poseidon2
 
@@ -28,7 +29,7 @@ def hashProfile : HashProfile := {
   partRounds := 21
 }
 
-def internalMatrix : Array (Zmod hashProfile.p) := #[
+def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
             0x409133ef, 0x1667a8a0, 0x06a6c7b5, 0x6f53160d, 0x273b11d0,
             0x03176c5c, 0x72f9bbf8, 0x73ceba90, 0x5cdef81c, 0x01393284,
             0x46daee05, 0x065d7ba5, 0x52d72d6e, 0x05dd05df, 0x3bab4b62,
@@ -86,6 +87,12 @@ def partialRoundConstants : Array (Zmod hashProfile.p) := #[
         0x46b3969f, 0x5c7b7a0e, 0x7078fc60, 0x4f22d482, 0x482a9aee,
         0x6beb839d
     ]
+
+def lurkContext : Hash.Context hashProfile := {
+  internalMatrixDiag
+  fullRoundConstants
+  partialRoundConstants
+}
 
 end BabyBear24
 

@@ -149,7 +149,7 @@ def getPartialRound (round : Nat) (profile : HashProfile) : Nat :=
 
 def getFullRound (round : Nat) (profile : HashProfile) : Nat :=
   let halfFullRound := profile.fullRounds / 2
-  if round <= halfFullRound then round else round + halfFullRound + profile.partRounds
+  if round <= halfFullRound then round else round - profile.partRounds
 
 variable (profile : HashProfile)
 
@@ -164,12 +164,13 @@ def addPartialConst : HashM profile PUnit := do
   modify fun ⟨r, vec⟩ => ⟨r, vec.modify 0 (· + const)⟩
 
 def internalMatrixAction (diag : Array (Zmod p)) (vec : Vector (Zmod p)) : Vector (Zmod p) :=
-  let sum := diag.foldl (· + ·) 0
+  let sum := vec.foldl (· + ·) 0
   vec.mapIdx fun idx a => sum + a * diag[idx]!
 
 open Matrix in
 def internalLinearLayer : HashM profile PUnit := do
   let diag := (← read).internalMatrixDiag
+  dbg_trace "{(←get).round}: {(←get).state}"
   modify (fun ⟨r, vec⟩ => ⟨r, internalMatrixAction diag vec⟩)
 
 -- depends on `vec` having size 4
@@ -188,18 +189,19 @@ def externalMatrixAction (vec : Vector (Zmod p)) : Vector (Zmod p) := Id.run do
   for idx in [:t] do
     result := result ++ smallMatrixAction (vec.extract (4 * idx) (4 * (idx + 1)))
 
-  let sums := Array.iota 4 |>.map (fun k =>
-                Array.iota t |>.map (fun j => result[4 * j + k]!)
+  let sums := Array.iota 3 |>.map (fun k =>
+                Array.iota (t - 1) |>.map (fun j => result[4 * j + k]!)
                              |>.foldl (· + ·) 0)
 
   for i in [:vec.size] do
-    result := result.set! i sums[i % 4]!
+    result := result.modify i (· + sums[i % 4]!)
 
   return result
 
 open Matrix in
 def externalLinearLayer : HashM profile PUnit := do
   modify (fun ⟨r, vec⟩ => ⟨r, externalMatrixAction vec⟩)
+  dbg_trace "{(←get).round}: {(←get).state}"
 
 def fullRound : HashM profile PUnit :=
   addFullConst profile *>
@@ -208,7 +210,7 @@ def fullRound : HashM profile PUnit :=
 
 def partialRound : HashM profile PUnit :=
   addPartialConst profile *>
-  (modify fun ⟨r, vec⟩ => ⟨r.succ, vec.set! 0 (profile.sBox vec[0]!)⟩) *>
+  (modify fun ⟨r, vec⟩ => ⟨r.succ, vec.modify 0 profile.sBox⟩) *>
   internalLinearLayer profile
 
 open Monad in
