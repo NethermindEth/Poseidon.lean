@@ -170,7 +170,6 @@ def internalMatrixAction (diag : Array (Zmod p)) (vec : Vector (Zmod p)) : Vecto
 open Matrix in
 def internalLinearLayer : HashM profile PUnit := do
   let diag := (← read).internalMatrixDiag
-  dbg_trace "{(←get).round}: {(←get).state}"
   modify (fun ⟨r, vec⟩ => ⟨r, internalMatrixAction diag vec⟩)
 
 -- depends on `vec` having size 4
@@ -201,7 +200,6 @@ def externalMatrixAction (vec : Vector (Zmod p)) : Vector (Zmod p) := Id.run do
 open Matrix in
 def externalLinearLayer : HashM profile PUnit := do
   modify (fun ⟨r, vec⟩ => ⟨r, externalMatrixAction vec⟩)
-  dbg_trace "{(←get).round}: {(←get).state}"
 
 def fullRound : HashM profile PUnit :=
   addFullConst profile *>
