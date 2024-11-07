@@ -1,4 +1,5 @@
 import Poseidon.HashImpl
+import Poseidon.Parameters.BabyBear
 import Poseidon.Parameters.Lurk4
 import Poseidon.Parameters.Lurk3
 
@@ -11,10 +12,10 @@ context, and input formatting to mirror the Poseidon hashing used in Lurk.
 
 namespace Poseidon.Lurk
 
-open Poseidon 
+open Poseidon
 
 /-- The pre-computed hashing context used by Lurk for commitments-/
-def Context3 : Hash.Context Lurk3.hashProfile := 
+def Context3 : Hash.Context Lurk3.hashProfile :=
   ⟨Lurk3.MDS, Lurk3.roundConstants⟩
 
 /-- The pre-computed hashing context used by Lurk. -/
@@ -34,3 +35,23 @@ constants.
 -/
 def hash4 (f₁ f₂ f₃ f₄ : Zmod p) : Zmod p :=
   Poseidon.hash Lurk4.hashProfile Context4 #[f₁, f₂, f₃, f₄] .merkleTree
+
+end Poseidon.Lurk
+
+namespace Poseidon2.Lurk
+
+open BabyBear (p)
+
+def hash24 (input : Array (Zmod p)) : Array (Zmod p) :=
+  Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input
+
+def hash32 (input : Array (Zmod p)) : Array (Zmod p) :=
+  Poseidon2.hashInputWithCtx BabyBear32.hashProfile BabyBear32.lurkContext input
+
+def hash40 (input : Array (Zmod p)) : Array (Zmod p) :=
+  Poseidon2.hashInputWithCtx BabyBear40.hashProfile BabyBear40.lurkContext input
+
+def hash48 (input : Array (Zmod p)) : Array (Zmod p) :=
+  Poseidon2.hashInputWithCtx BabyBear48.hashProfile BabyBear48.lurkContext input
+
+end Poseidon2.Lurk

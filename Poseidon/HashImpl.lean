@@ -3,7 +3,7 @@ import Poseidon.Hash
 /-!
 # Hash implementation
 
-This module contains the primary function `Poseidon.hash` which 
+This module contains the primary function `Poseidon.hash` which
 
 The inputs to `Poseidon.hash` are
 * `HashProfile` : Contains the parameters prime `p`, width `t`, security parameters `M`, and S-box exponent `a`
@@ -24,22 +24,22 @@ These are the two domains specified in the Filecoin/Lurk implementation of Posei
 constitute of all the possible domains.
 -/
 inductive Domain
-  | merkleTree   -- Hashing fixed `arity : Nat` merkle tree` 
+  | merkleTree   -- Hashing fixed `arity : Nat` merkle tree`
   | fixedLength  -- Hashing fixed length inputs
 
 /--
 Prepares the preimage to serve as an input to the Poseidon hash function by prepending the domain
 tag and padding when necessary
 -/
-def getInput (prof : HashProfile) 
-             (preimage : Array (Zmod prof.p)) 
-             (domain : Domain) : Option $ Array $ Zmod prof.p := 
+def getInput (prof : HashProfile)
+             (preimage : Array (Zmod prof.p))
+             (domain : Domain) : Option $ Array $ Zmod prof.p :=
   match domain with
-    | .merkleTree => 
+    | .merkleTree =>
       if preimage.size != prof.t - 1 then none else
         let domainTag : Zmod prof.p := ⟨.ofNat $ 2^(preimage.size) -1⟩
         some $ #[domainTag] ++ preimage
-    | .fixedLength  => 
+    | .fixedLength  =>
       if preimage.size > prof.t - 1 then none else
         let domainTag : Zmod prof.p := ⟨.ofNat $ 2^64 * preimage.size⟩
         let padding : Array $ Zmod prof.p := .mkArray (prof.t - 1 - preimage.size) 0
@@ -51,11 +51,13 @@ of the output vector is selected and returned (according to the Filecoin specifi
 
 If the input size is mis-matched with the expected arity, then the hash returns a dummy value `0`.
 -/
-def hash (prof : HashProfile) 
+def hash (prof : HashProfile)
          (context : Hash.Context prof)
-         (preimage : Array (Zmod prof.p)) 
-         (domain : Domain) : Zmod prof.p := 
+         (preimage : Array (Zmod prof.p))
+         (domain : Domain) : Zmod prof.p :=
   let input? := getInput prof preimage domain
   match input? with
     | none       => 0
     | some input => hashInputWithCtx prof context input |>.get! 1
+
+end Poseidon
