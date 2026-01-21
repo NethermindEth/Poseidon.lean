@@ -24,7 +24,7 @@ def pyProfile254 : HashProfile := {
 
 namespace pyProfile254
 
-def roundConstants : Vector (Zmod pyProfile254.p) := 
+def roundConstants : Vector' (Zmod pyProfile254.p) := 
 #[0x0ee9a592ba9a9518d05986d656f40c2114c4993c11bb29938d21d47304cd8e6e,
   0x00f1445235f2148c5986587169fc1bcd887b08d4d00868df5696fff40956e864,
   0x08dff3487e8ac99e1f29a058d0fa80b930c728730b7ab36ce879f3890ecf73f5,
@@ -247,7 +247,7 @@ def pyProfile255 : HashProfile := {
 
 namespace pyProfile255
 
-def roundConstants : Vector (Zmod pyProfile255.p) :=
+def roundConstants : Vector' (Zmod pyProfile255.p) :=
 #[0x5ee52b2f39e240a4006e97a15a7609dce42fa9aa510d11586a56db98fa925158,
   0x3e92829ce321755f769c6fd0d51e98262d7747ad553b028dbbe98b5274b9c8e1,
   0x7067b2b9b65af0519cef530217d4563543852399c2af1557fcd9eb325b5365e4,
