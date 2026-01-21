@@ -42,7 +42,7 @@ def getInput (prof : HashProfile)
     | .fixedLength  =>
       if preimage.size > prof.t - 1 then none else
         let domainTag : Zmod prof.p := ⟨.ofNat $ 2^64 * preimage.size⟩
-        let padding : Array $ Zmod prof.p := .mkArray (prof.t - 1 - preimage.size) 0
+        let padding : Array $ Zmod prof.p := Array.replicate (prof.t - 1 - preimage.size) 0
         some $ #[domainTag] ++ preimage ++ padding
 
 /--
