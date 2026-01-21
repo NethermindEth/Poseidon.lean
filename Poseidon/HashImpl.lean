@@ -58,6 +58,6 @@ def hash (prof : HashProfile)
   let input? := getInput prof preimage domain
   match input? with
     | none       => 0
-    | some input => hashInputWithCtx prof context input |>.get! 1
+    | some input => (hashInputWithCtx prof context input)[1]!
 
 end Poseidon
