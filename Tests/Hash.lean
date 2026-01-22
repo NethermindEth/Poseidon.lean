@@ -156,9 +156,8 @@ def testContext (arity : Nat) : Hash.Context (testProfile arity) := {
 }
 
 def testInput (arity : Nat) : Array $ Zmod (testProfile arity).p := 
-  List.iota arity |>.reverse 
-                  |>.map (Coe.coe ∘ Nat.pred)
-                  |>.toArray
+  List.range' 1 arity |>.map (Coe.coe ∘ Nat.pred)
+                      |>.toArray
 
 def runTest (arity : Nat) (domain : Domain) := 
   Poseidon.hash (testProfile arity) (testContext arity) (testInput arity) domain
@@ -213,3 +212,5 @@ def main : IO UInt32 := do
   IO.println "Testing hash calculation"
   IO.println "------------------------"
   lspecIO $ refTests ++ pyTests ++ rustTests
+
+#eval main
