@@ -29,13 +29,15 @@ def hashProfile : HashProfile := {
   partRounds := 21
 }
 
+-- Internal diagonal matching Rust's INTERNAL_DIAG_MONTY_24:
+-- [-2, 1, 2, 1/2, 3, 4, -1/2, -3, -4, 1/2^8, 1/4, 1/8, 1/16, 1/2^7, 1/2^9, 1/2^27, -1/2^8, -1/4, -1/8, -1/16, -1/32, -1/64, -1/2^7, -1/2^27]
 def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
-            0x409133ef, 0x1667a8a0, 0x06a6c7b5, 0x6f53160d, 0x273b11d0,
-            0x03176c5c, 0x72f9bbf8, 0x73ceba90, 0x5cdef81c, 0x01393284,
-            0x46daee05, 0x065d7ba5, 0x52d72d6e, 0x05dd05df, 0x3bab4b62,
-            0x6ada3841, 0x2fc5fbeb, 0x770d61af, 0x5715aae8, 0x03ef0e8f,
-            0x75b6c76f, 0x242adf5e, 0x00d0ca4b, 0x36c0e387
-        ]
+    0x77ffffff, 0x00000001, 0x00000002, 0x3c000001, 0x00000003,
+    0x00000004, 0x3c000000, 0x77fffffe, 0x77fffffd, 0x77880001,
+    0x5a000001, 0x69000001, 0x70800001, 0x77100001, 0x77c40001,
+    0x77fffff2, 0x00780000, 0x1e000000, 0x0f000000, 0x07800000,
+    0x03c00000, 0x01e00000, 0x00f00000, 0x0000000f
+]
 
 def fullRoundConstants : Array $ Array (Zmod hashProfile.p) := #[
         #[0x0fa20c37, 0x0795bb97, 0x12c60b9c, 0x0eabd88e, 0x096485ca,
