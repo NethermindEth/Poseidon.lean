@@ -45,9 +45,19 @@ instance List.shrinkable [Shrinkable α] : Shrinkable (List α) where
 instance Nat.sampleableExt : SampleableExt Nat :=
   SampleableExt.mkSelfContained (do Gen.choose Nat 0 (← Gen.getSize))
 
+-- Generate exactly 24-element lists for Poseidon2 testing
+def Gen.list24 [Repr α] (x : Gen α) : Gen (List α) := do
+  let mut res := []
+  for _ in [:24] do
+    res := (← x) :: res
+  let final := res.reverse
+  dbg_trace s!"Testing with: {repr final}"
+  return final
+
 instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
   proxy := List (SampleableExt.proxy α)
-  sample := Gen.listOf SampleableExt.sample
+  -- sample := Gen.listOf SampleableExt.sample
+  sample := Gen.list24 SampleableExt.sample
   interp := List.map SampleableExt.interp
 
 /-
