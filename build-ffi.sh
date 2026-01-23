@@ -78,9 +78,9 @@ gcc -fPIC -O2 -I"$LEAN_INCLUDE" $SHARED_FLAG -o "$OUTPUT_LIB" \
 
 echo "  ✓ Shared library built: $FFI_DIR/$OUTPUT_LIB"
 
-# Step 3: Copy to feature-B
+# Step 3: Copy to Poseidon.lean
 echo ""
-echo "Step 3: Installing library to feature-B..."
+echo "Step 3: Installing library to Poseidon.lean..."
 cp "$OUTPUT_LIB" "$SCRIPT_DIR/"
 echo "  ✓ Library installed to: $SCRIPT_DIR/$OUTPUT_LIB"
 
