@@ -8,15 +8,15 @@ open BabyBear (p)
 open LSpec
 open SlimCheck
 
+-- Generate exactly 24-element lists for Poseidon2 testing
 instance : Shrinkable (List Nat) where
-  shrink := fun l => l.tails.tail
+  shrink := fun _ => []  -- Don't shrink (would change length)
 
 instance : SampleableExt (List Nat) :=
   SampleableExt.mkSelfContained do
     let size ← Gen.getSize
-    let len ← Gen.choose Nat 0 (min size 30)
     let mut result := []
-    for _ in [:len] do
+    for _ in [:24] do
       let x ← Gen.choose Nat 0 (size * 100)
       result := x :: result
     return result.reverse
