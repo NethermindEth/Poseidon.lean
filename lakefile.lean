@@ -31,3 +31,4 @@ lean_exe Tests.Hash
 
 -- Test executable for FFI
 lean_exe Tests.FFI
+lean_exe Tests.Poseidon2
