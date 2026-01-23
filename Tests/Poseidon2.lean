@@ -13,20 +13,46 @@ def shrinkByPadWithZero (l :  List Nat) : List Nat :=
   | [] => []
   | h :: tl => if h = 0 then 0 :: shrinkByPadWithZero tl else 0 :: tl
 
--- instance : Shrinkable (List Nat) where
---   shrink := fun l => l.tails
+/-
+# Based on Mathlib v4.12.0 - Mathlib/Testing/SlimCheck/Sampleable.lean
 
-instance : SampleableExt (List Nat) :=
-  SampleableExt.mkSelfContained do
-    let size ← Gen.getSize
-    let len ← Gen.choose Nat 0 (min size 30)
-    let mut result := []
-    for _ in [:len] do
-      let x ← Gen.choose Nat 0 (size * 100)
-      result := x :: result
-    let final := result.reverse
-    dbg_trace s!"Testing with: {final}"
-    return final
+The following code is based on Sampleable.lean from Mathlib v4.12.0,
+Used under the Apache-2.0 license,
+  See https://github.com/leanprover-community/mathlib4/blob/v4.12.0/LICENSE
+-/
+
+/-- `Nat.shrink' n` creates a list of smaller natural numbers by
+successively dividing `n` by 2 . For example, `Nat.shrink 5 = [2, 1, 0]`. -/
+def Nat.shrink (n : Nat) : List Nat :=
+  if h : 0 < n then
+    let m := n/2
+    have : m < n := by
+      apply Nat.div_lt_self h
+      decide
+    m :: shrink m
+  else
+    []
+
+instance Nat.shrinkable : Shrinkable Nat where
+  shrink := Nat.shrink
+  
+/-- Shrink a list of a shrinkable type, either by discarding an element or shrinking an element. -/
+instance List.shrinkable [Shrinkable α] : Shrinkable (List α) where
+  shrink := fun L =>
+    (L.mapIdx fun i _ => L.eraseIdx i) ++
+    (L.mapIdx fun i a => (Shrinkable.shrink a).map fun a' => L.set i a').flatten
+
+instance Nat.sampleableExt : SampleableExt Nat :=
+  SampleableExt.mkSelfContained (do Gen.choose Nat 0 (← Gen.getSize))
+
+instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
+  proxy := List (SampleableExt.proxy α)
+  sample := Gen.listOf SampleableExt.sample
+  interp := List.map SampleableExt.interp
+
+/-
+# End of section of code based on Mathlib v4.12.0
+-/
 
 def input₁ : Array Nat := Array.range 24
 
