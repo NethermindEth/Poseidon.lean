@@ -4,3 +4,4 @@
 /target
 Cargo.lock
 .lake
+libposeidon2_ffi_lean.so
