@@ -56,8 +56,8 @@ def Gen.list24 [Repr α] (x : Gen α) : Gen (List α) := do
 
 instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
   proxy := List (SampleableExt.proxy α)
-  -- sample := Gen.listOf SampleableExt.sample
-  sample := Gen.list24 SampleableExt.sample
+  -- sample := Gen.listOf SampleableExt.sample -- Do not constrain list length
+  sample := Gen.list24 SampleableExt.sample -- Only generate lists of length 24
   interp := List.map SampleableExt.interp
 
 /-
