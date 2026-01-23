@@ -19,7 +19,9 @@ instance : SampleableExt (List Nat) :=
     for _ in [:24] do
       let x ← Gen.choose Nat 0 (size * 100)
       result := x :: result
-    return result.reverse
+    let final := result.reverse
+    dbg_trace s!"Testing with: {final}"
+    return final
 
 def input₁ : Array Nat := Array.range 24
 
