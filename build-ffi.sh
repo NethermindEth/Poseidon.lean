@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Build script for Poseidon2 FFI library
 #
 # This script builds the Rust FFI library and prepares it for use with Lean.
@@ -42,6 +42,7 @@ else
     LINK_FLAGS="-Wl,--whole-archive $PLONKY3_DIR/target/release/libposeidon2_ffi.a -Wl,--no-whole-archive"
 fi
 
+cd "$SCRIPT_DIR"
 # Find Lean include path
 if command -v lean &> /dev/null; then
     LEAN_PREFIX=$(lean --print-prefix 2>/dev/null || echo "")
@@ -65,6 +66,8 @@ if [ ! -f "$LEAN_INCLUDE/lean/lean.h" ]; then
 fi
 
 echo "  Using Lean include path: $LEAN_INCLUDE"
+
+cd "$FFI_DIR"
 
 # Compile
 OUTPUT_LIB="libposeidon2_ffi_lean.$LIB_EXT"
