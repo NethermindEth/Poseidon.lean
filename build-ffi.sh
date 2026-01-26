@@ -62,7 +62,7 @@ if [ ! -f "$LEAN_INCLUDE/lean/lean.h" ]; then
 fi
 if [ ! -f "$LEAN_INCLUDE/lean/lean.h" ]; then
     # Try current toolchain
-    LEAN_INCLUDE="$HOME/.elan/toolchains/leanprover-lean4-v4.27.0-rc1/include"
+    LEAN_INCLUDE="$HOME/.elan/toolchains/leanprover-lean4-v4.27.0/include"
 fi
 if [ ! -f "$LEAN_INCLUDE/lean/lean.h" ]; then
     echo "Error: Cannot find Lean headers. Please set LEAN_INCLUDE environment variable."

@@ -20,10 +20,10 @@ lean_lib Poseidon where
   precompileModules := true
 
 require YatimaStdLib from git
-  "https://github.com/NethermindEth/YatimaStdLib.lean" @ "v4.27.0-rc1"
+  "https://github.com/NethermindEth/YatimaStdLib.lean" @ "v4.27.0"
 
 require LSpec from git
-  "https://github.com/NethermindEth/LSpec" @ "v4.27.0-rc1"
+  "https://github.com/NethermindEth/LSpec" @ "v4.27.0"
 
 lean_exe Tests.RoundNumbers
 lean_exe Tests.RoundConstants
