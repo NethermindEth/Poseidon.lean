@@ -1,4 +1,4 @@
-import YatimaStdLib.Matrix
+import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Zmod
 
 /-!
@@ -16,8 +16,8 @@ namespace Poseidon
 Generates an `t × t` Cauchy matrix over `Zmod p` with `i, j` entry `(i + t + j)⁻¹`.
 This is the matrix  used as the MDS matrix for Filecoin.
 -/
-def generatePoseidonMDS (p t : Nat) : Matrix (Zmod p) := Id.run do
-  let mut answer : Matrix (Zmod p) := #[]
+def generatePoseidonMDS (p t : Nat) : YatimaMatrix (Zmod p) := Id.run do
+  let mut answer : YatimaMatrix (Zmod p) := #[]
   for c in [0 : t] do
     answer := answer.push #[]
     for r in [t : 2*t] do

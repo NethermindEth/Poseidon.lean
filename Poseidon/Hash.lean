@@ -2,7 +2,7 @@ import Poseidon.Profile
 import Poseidon.MDS
 import Poseidon.RoundConstants
 import YatimaStdLib.Zmod
-import YatimaStdLib.Matrix
+import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Monad
 
 /-!
@@ -27,7 +27,7 @@ The context can be generated from a HashProfile with some choices, but is not de
 they are separated to allow for alternate implementations.
 -/
 structure Hash.Context (profile : HashProfile) where
-  mdsMatrix : Matrix (Zmod profile.p)
+  mdsMatrix : YatimaMatrix (Zmod profile.p)
   roundConst : Array (Zmod profile.p)
 
 open Hash in
@@ -62,7 +62,7 @@ variable (profile : HashProfile)
 
 namespace HashM
 
-open Matrix in
+open YatimaMatrix in
 def linearLayer : HashM profile PUnit := do
   let mds := (← read).mdsMatrix
   modify (fun ⟨r, vec⟩ => ⟨r, action mds vec⟩)
@@ -167,14 +167,14 @@ def internalMatrixAction (diag : Array (Zmod p)) (vec : Vector' (Zmod p)) : Vect
   let sum := vec.foldl (· + ·) 0
   vec.mapIdx fun idx a => sum + a * diag[idx]!
 
-open Matrix in
+open YatimaMatrix in
 def internalLinearLayer : HashM profile PUnit := do
   let diag := (← read).internalMatrixDiag
   modify (fun ⟨r, vec⟩ => ⟨r, internalMatrixAction diag vec⟩)
 
 -- depends on `vec` having size 4
 def smallMatrixAction (vec : Vector' (Zmod p)) : Vector' (Zmod p) :=
-  let smallMatrix : Matrix (Zmod p) :=
+  let smallMatrix : YatimaMatrix (Zmod p) :=
     #[#[2, 1, 1, 3],
       #[3, 2, 1, 1],
       #[1, 3, 2, 1],
@@ -197,7 +197,7 @@ def externalMatrixAction (vec : Vector' (Zmod p)) : Vector' (Zmod p) := Id.run d
 
   return result
 
-open Matrix in
+open YatimaMatrix in
 def externalLinearLayer : HashM profile PUnit := do
   modify (fun ⟨r, vec⟩ => ⟨r, externalMatrixAction vec⟩)
 
