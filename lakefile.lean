@@ -8,7 +8,7 @@ lean_lib Poseidon where
   precompileModules := true
 
 require YatimaStdLib from git
-  "https://github.com/NethermindEth/YatimaStdLib.lean" @ "v4.27.0"
+  "https://github.com/NethermindEth/YatimaStdLib.lean" @ "Dan/fixNamingClash"
 
 require LSpec from git
   "https://github.com/NethermindEth/LSpec" @ "v4.27.0"
