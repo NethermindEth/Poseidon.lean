@@ -15,7 +15,7 @@
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "35c19ebad6aaa98a4e3c04206c1f910404ad6a36",
+   "rev": "6006676b736bdea7ec8ee0d27cbc6ee529e08d0c",
    "name": "YatimaStdLib",
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.27.0",
