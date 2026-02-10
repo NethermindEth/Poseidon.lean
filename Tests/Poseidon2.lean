@@ -7,15 +7,15 @@ open BabyBear (p)
 open LSpec
 open SlimCheck
 
-def input16 : Array <| Zmod p := Array.iota 15 |>.map .mk
-def input24 : Array <| Zmod p := Array.iota 23 |>.map .mk
+def input16 : Array <| ZMod p := Array.iota 15
+def input24 : Array <| ZMod p := Array.iota 23
 
 #eval Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input16
 #eval Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input24
 
 structure Poseidon2Width16Test where
   name : String
-  input : Array <| Zmod p
+  input : Array <| ZMod p
   expectedOutput : Array Int
 
 -- Expected outputs obtained by running the Poseidon2 hash from the `poseidon2-air` crate
@@ -26,7 +26,7 @@ def testInputs : List Poseidon2Width16Test := [
   ]
 
 def constructTest (t : Poseidon2Width16Test) : IO TestSeq:=
-  pure $ test t.name (t.expectedOutput.toList == (List.map (fun x ↦ x.rep) (Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext t.input).toList))
+  pure $ test t.name (t.expectedOutput.toList == (List.map (fun (x : ZMod p) ↦ x.cast) (Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext t.input).toList))
 
 def main : IO UInt32 := lspecEachIO testInputs constructTest
 

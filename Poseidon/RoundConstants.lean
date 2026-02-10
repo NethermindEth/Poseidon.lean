@@ -1,7 +1,7 @@
+import Mathlib
 import Poseidon.Profile
 import YatimaStdLib.ByteArray
 import YatimaStdLib.Monad
-import YatimaStdLib.Zmod
 
 /-!
 # Generates the Poseidon Round Constants
@@ -69,7 +69,7 @@ The internal state used in round constant generation
 structure RCState (p : Nat) where
   bitRound : Array Bit
   state  : ByteArray
-  rndCon : Array (Zmod p)
+  rndCon : Array (ZMod p)
 
 /--
 Initialization of the internal state.
@@ -141,5 +141,5 @@ Poseidon hashing function.
 implementation or that used in other commonly included. Generally this should be taken to be `false`
 unless it is necessary to match the reference implementation.
 -/
-def generateRConstants (usingRef : Bool) (profile : Poseidon.HashProfile) : Array (Zmod profile.p) :=
+def generateRConstants (usingRef : Bool) (profile : Poseidon.HashProfile) : Array (ZMod profile.p) :=
    Id.run <| Prod.snd <$> runGeneration profile (.init usingRef profile) |>.rndCon

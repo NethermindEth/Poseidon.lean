@@ -29,10 +29,12 @@ def hashProfile : HashProfile := {
   partRounds := 13
 }
 
-def internalMatrixDiag : Array (Zmod hashProfile.p) := 
-  #[-2, 1, 2, 1/2, 3, 4, -1/2, -3, -4, 1/2^8, 1/4, 1/8, 1/2^27, -1/2^8, -1/16, -1/2^27]
+-- Based on #[-2, 1, 2, 1/2, 3, 4, -1/2, -3, -4, 1/2^8, 1/4, 1/8, 1/2^27, -1/2^8, -1/16, -1/2^27]
+def internalMatrixDiag : Array (ZMod hashProfile.p) := 
+  #[0x77ffffff, 0x1, 0x2, 0x3c000001, 0x3, 0x4, 0x3c000000, 0x77fffffe, 0x77fffffd, 0x77880001, 0x5a000001, 0x69000001,
+  0x77fffff2, 0x780000, 0x7800000, 0xf]
 
-def fullRoundConstants : Array $ Array (Zmod hashProfile.p) := #[
+def fullRoundConstants : Array $ Array (ZMod hashProfile.p) := #[
         #[
             0x69cbb6af, 0x46ad93f9, 0x60a00f4e, 0x6b1297cd, 0x23189afe, 0x732e7bef, 0x72c246de,
             0x2c941900, 0x0557eede, 0x1580496f, 0x3a3ea77b, 0x54f3f271, 0x0f49b029, 0x47872fe1,
@@ -75,12 +77,12 @@ def fullRoundConstants : Array $ Array (Zmod hashProfile.p) := #[
         ]
     ]
 
-def partialRoundConstants : Array (Zmod hashProfile.p) := #[
+def partialRoundConstants : Array (ZMod hashProfile.p) := #[
     0x5a8053c0, 0x693be639, 0x3858867d, 0x19334f6b, 0x128f0fd8, 0x4e2b1ccb, 0x61210ce0, 0x3c318939,
     0x0b5b2f22, 0x2edb11d5, 0x213effdf, 0x0cac4606, 0x241af16d,
 ]
 
-def lurkContext : Hash.Context hashProfile := {
+def lurkContext : Poseidon2.Hash.Context hashProfile := {
   internalMatrixDiag
   fullRoundConstants
   partialRoundConstants
@@ -98,7 +100,7 @@ def hashProfile : HashProfile := {
   partRounds := 21
 }
 
-def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
+def internalMatrixDiag : Array (ZMod hashProfile.p) := #[
             0x409133ef, 0x1667a8a0, 0x06a6c7b5, 0x6f53160d, 0x273b11d0,
             0x03176c5c, 0x72f9bbf8, 0x73ceba90, 0x5cdef81c, 0x01393284,
             0x46daee05, 0x065d7ba5, 0x52d72d6e, 0x05dd05df, 0x3bab4b62,
@@ -106,7 +108,7 @@ def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
             0x75b6c76f, 0x242adf5e, 0x00d0ca4b, 0x36c0e387
         ]
 
-def fullRoundConstants : Array $ Array (Zmod hashProfile.p) := #[
+def fullRoundConstants : Array $ Array (ZMod hashProfile.p) := #[
         #[0x0fa20c37, 0x0795bb97, 0x12c60b9c, 0x0eabd88e, 0x096485ca,
         0x07093527, 0x1b1d4e50, 0x30a01ace, 0x3bd86f5a, 0x69af7c28,
         0x3f94775f, 0x731560e8, 0x465a0ecd, 0x574ef807, 0x62fd4870,
@@ -149,7 +151,7 @@ def fullRoundConstants : Array $ Array (Zmod hashProfile.p) := #[
         0x4b3d5b42, 0x63ac0b37, 0x5fe5bb14, 0x5244e9d4]
     ]
 
-def partialRoundConstants : Array (Zmod hashProfile.p) := #[
+def partialRoundConstants : Array (ZMod hashProfile.p) := #[
         0x1da78ec2, 0x730b0924, 0x3eb56cf3, 0x5bd93073, 0x37204c97,
         0x51642d89, 0x66e943e8, 0x1a3e72de, 0x70beb1e9, 0x30ff3b3f,
         0x4240d1c4, 0x12647b8d, 0x65d86965, 0x49ef4d7c, 0x47785697,
@@ -175,7 +177,7 @@ def hashProfile : HashProfile := {
   partRounds := 30
 }
 
-def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
+def internalMatrixDiag : Array (ZMod hashProfile.p) := #[
   0x08529dda, 0x082b3a31, 0x30e3bf36, 0x64013853, 0x1c9f1369, 0x02eb2be6,
   0x2fe5a852, 0x1e9eadcd, 0x19459c0d, 0x24f2724c, 0x63a84df1, 0x02a44c1e,
   0x18e1fccf, 0x3599bc43, 0x76f799b8, 0x229dd5f5, 0x58050cfb, 0x6b1f557e,
@@ -183,7 +185,7 @@ def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
   0x2ffd14a4, 0x0a25ed64, 0x5d39e005, 0x5ed5ce5e, 0x453da739, 0x5c6a17f0,
   0x390ef2ac, 0x524b3356 ]
 
-def fullRoundConstants : Array (Array (Zmod hashProfile.p)) := #[
+def fullRoundConstants : Array (Array (ZMod hashProfile.p)) := #[
         #[
             0x6710e381, 0x01ab3dad, 0x49bdc51f, 0x41c98c65, 0x23885d8a,
             0x24ea7d7c, 0x6b65fc6d, 0x6106615a, 0x084957f3, 0x157c3634,
@@ -258,7 +260,7 @@ def fullRoundConstants : Array (Array (Zmod hashProfile.p)) := #[
         ]
     ]
 
-def partialRoundConstants : Array (Zmod hashProfile.p) := #[ 0x3dddd04e,
+def partialRoundConstants : Array (ZMod hashProfile.p) := #[ 0x3dddd04e,
   0x5a3d0558, 0x763e6c75, 0x676f1d88, 0x77b82255, 0x25df8a51, 0x697c3b10,
   0x03cf6edf, 0x12b54f78, 0x6633d534, 0x426fbcb7, 0x554665dc, 0x5689bdb2,
   0x12e747de, 0x60c28745, 0x11ca4ba5, 0x3f0f9583, 0x56c7d993, 0x20f6875f,
@@ -283,7 +285,7 @@ def hashProfile : HashProfile := {
   partRounds := 38
 }
 
-def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
+def internalMatrixDiag : Array (ZMod hashProfile.p) := #[
           0x1777e9b2, 0x0543f0b4, 0x389b8f6b, 0x5165974d, 0x268bf772,
           0x03911e90, 0x4b044d42, 0x0f521fef, 0x4adc8c09, 0x4b1b25f1,
           0x63418d54, 0x568f6e7b, 0x06200af8, 0x28db6a19, 0x62df9494,
@@ -293,7 +295,7 @@ def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
           0x3a08b55a, 0x468ac82e, 0x56fe58b6, 0x2da33c73, 0x1b9cbca3,
           0x11cc15f3, 0x340679cb, 0x365e5beb, 0x151f0efb, 0x77215247 ]
 
-def fullRoundConstants : Array (Array (Zmod hashProfile.p)) := #[
+def fullRoundConstants : Array (Array (ZMod hashProfile.p)) := #[
   #[
             0x0267f8f9, 0x2e204ec8, 0x6cdf5900, 0x6d0dc9c8, 0x10e8a01f,
             0x5c415df0, 0x43df3171, 0x07db48b4, 0x6f33cc71, 0x46382db7,
@@ -375,7 +377,7 @@ def fullRoundConstants : Array (Array (Zmod hashProfile.p)) := #[
             0x07abb7fb, 0x0b1dc3b9, 0x48f6a651, 0x3ca13acf, 0x5a3f16a1]
           ]
 
-def partialRoundConstants : Array (Zmod hashProfile.p) := #[
+def partialRoundConstants : Array (ZMod hashProfile.p) := #[
    0x149c8770, 0x3f0f3def, 0x39dd69a7, 0x0a64912f, 0x2edb5627, 0x28e94ccc,
    0x1354ce30, 0x498d56fb, 0x1fcc6319, 0x61083c5e, 0x01d92333, 0x042f8047,
    0x169af0df, 0x151fdb30, 0x35455f11, 0x6be79519, 0x4002cc98, 0x2cd41aed,
@@ -402,7 +404,7 @@ def hashProfile : HashProfile := {
   partRounds := 46
 }
 
-def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
+def internalMatrixDiag : Array (ZMod hashProfile.p) := #[
             0x1c9a964a, 0x5f04c2b2, 0x5fbc3d49, 0x3228c523, 0x75248d9c,
             0x32f418df, 0x4e08083f, 0x48b83caa, 0x573b6f62, 0x0903bea6,
             0x2a981b3f, 0x277427e0, 0x6f703c9a, 0x55ef66c1, 0x0c0497c0,
@@ -414,7 +416,7 @@ def internalMatrixDiag : Array (Zmod hashProfile.p) := #[
             0x4d59fbfb, 0x113219b1, 0x59bcf60e, 0x315b2720, 0x714ad74e,
             0x3ed1e528, 0x1dbc73eb, 0x3b3bd3b0 ]
 
-def fullRoundConstants : Array (Array (Zmod hashProfile.p)) := #[
+def fullRoundConstants : Array (Array (ZMod hashProfile.p)) := #[
        #[
             0x761c8842, 0x2e820912, 0x739fd526, 0x1cfc7114, 0x39661504,
             0x56f39b10, 0x38880412, 0x35819110, 0x6203b593, 0x667d26a3,
@@ -513,7 +515,7 @@ def fullRoundConstants : Array (Array (Zmod hashProfile.p)) := #[
         ]
 ]
 
-def partialRoundConstants : Array (Zmod hashProfile.p) := #[
+def partialRoundConstants : Array (ZMod hashProfile.p) := #[
  0x0501bd2d, 0x6130f427, 0x6ea73a9e, 0x578c1b75, 0x4b17663b, 0x11bd44f0,
  0x6b062b2d, 0x2d7ce330, 0x26741202, 0x409b471c, 0x6811da4f, 0x2bfb4097,
  0x57936be2, 0x13fb5996, 0x77612a34, 0x770371f1, 0x3be4de9f, 0x76551fdc,

@@ -1,4 +1,4 @@
-import YatimaStdLib.Zmod
+import Mathlib
 
 /-!
 # Poseidon Profiles
@@ -38,8 +38,7 @@ structure HashProfile extends SecProfile where
   partRounds : Nat
 deriving Repr
 
-open Zmod in
-def HashProfile.sBox (profile : HashProfile) : Zmod profile.p → Zmod profile.p := 
+def HashProfile.sBox (profile : HashProfile) : ZMod profile.p → ZMod profile.p := 
   match profile.a with
   | .ofNat n => fun x => x^n
-  | .negSucc n => fun x => (.modInv x)^(n + 1)
+  | .negSucc n => fun x => (x.inv)^(n + 1)

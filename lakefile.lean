@@ -7,6 +7,9 @@ package Poseidon
 lean_lib Poseidon where
   precompileModules := true
 
+require mathlib from git
+  "https://github.com/leanprover-community/mathlib4" @ "v4.27.0"
+
 require YatimaStdLib from git
   "https://github.com/NethermindEth/YatimaStdLib.lean" @ "v4.27.0"
 
