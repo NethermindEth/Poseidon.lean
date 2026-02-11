@@ -78,4 +78,4 @@ To run the property-based tests for Poseidon 2:
 1. From the folder containing this repo, run: `git clone -b Dan/comparePoseidon2ToLean https://github.com/NethermindEth/Plonky3/ Plonky3-FFI` (i.e. `Poseidon.lean` and `Plonky3-FFI should be sibling folders).
 2. From inside the `Poseidon.lean` folder, run `./build-ffi.sh`
 3. Run `lake exe Tests.Poseidon2`.
-4. The output `? PBT` indicates success of the property based tests (no tests failed, but, of course, this is not a guarantee of correctness so `?` is output).
+4. The output `✓* PBT` indicates "Passed without formal proof (e.g., property test passed all samples)".
