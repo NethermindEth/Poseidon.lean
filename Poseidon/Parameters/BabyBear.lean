@@ -11,10 +11,10 @@ namespace BabyBear
 def p : Nat := 2013265921
 
 def commonProfile : SecProfile := {
-  M := 128
-  t := 0
-  p := BabyBear.p
-  a := 7
+  M := 128 -- Security level M-bits
+  t := 0 -- Number of s-boxes
+  p := BabyBear.p -- prime
+  a := 7  -- sbox exponent
 }
 
 end BabyBear
