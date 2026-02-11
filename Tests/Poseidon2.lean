@@ -65,7 +65,7 @@ instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
 
 def input₁ : Array Nat := Array.range 16
 
-#eval List.map (λ ( x : ZMod BabyBear.p)  ↦ x.rep) (Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList
+#eval List.map (λ ( x : ZMod BabyBear.p)  ↦ (x.cast : ℤ)) (Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList
 
 -- Rust Poseidon2 Hash output on input [0..15]:
 --   [1906786279, 1737026427, 1959749225, 700325316, 1638050605, 1021608788, 1726691001, 1761127344, 1552405120, 417318995, 36799261, 1215172152, 614923223, 1300746575, 957311597, 304856115]
@@ -83,15 +83,15 @@ def tests : TestSeq := group "Poseidon2 Lean vs Rust tests" $
   test "input₁" ((
     (FFI.poseidon2Permute16Nat input₁).toList.map (fun x ↦ Int.ofNat x))
     = 
-    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList.map (fun x ↦ x.rep))) $
+    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList.map (fun x ↦ x.cast))) $
   test "input₁-reverse" ((
     (FFI.poseidon2Permute16Nat input₁).toList.map (fun x ↦ Int.ofNat x))
     = 
-    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList.map (fun x ↦ x.rep))) $
+    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList.map (fun x ↦ x.cast))) $
   check "PBT" (∀ (i : List Nat), ((
     (FFI.poseidon2Permute16Nat i.toArray).toList.map (fun x ↦ Int.ofNat x))
     = 
-    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext i.toArray).toList.map (fun x ↦ x.rep))))
+    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext i.toArray).toList.map (fun x ↦ x.cast))))
 
 def main : IO UInt32 := lspecIO
   tests
