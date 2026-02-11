@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
+
+# This script expects the Plonky3 repo to be cloned from:
+#   https://github.com/NethermindEth/Plonky3/
+#   and the branch Dan/comparePoseidon2ToLean checked out
+#   and located at ../Plonky3-FFI (relative to this script).
+
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLONKY3_DIR="$SCRIPT_DIR/../Plonky3-review-A"
+PLONKY3_DIR="$SCRIPT_DIR/../Plonky3-FFI"
 FFI_DIR="$PLONKY3_DIR/poseidon2-ffi"
 LEAN_INCLUDE="$(lean --print-prefix)/include"
 
