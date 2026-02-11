@@ -93,5 +93,9 @@ def tests : TestSeq := group "Poseidon2 Lean vs Rust tests" $
     = 
     ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext i.toArray).toList.map (fun x ↦ x.cast))))
 
+def tests' :=
+  @Std.HashMap.ofList String (List TestSeq) instBEqOfDecidableEq instHashableString
+    [("tests", [tests])]
+
 def main : IO UInt32 := lspecIO
-  tests
+  tests' []
