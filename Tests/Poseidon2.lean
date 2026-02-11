@@ -45,10 +45,10 @@ instance List.shrinkable [Shrinkable α] : Shrinkable (List α) where
 instance Nat.sampleableExt : SampleableExt Nat :=
   SampleableExt.mkSelfContained (do Gen.choose Nat 0 (← Gen.getSize))
 
--- Generate exactly 24-element lists for Poseidon2 testing
-def Gen.list24 [Repr α] (x : Gen α) : Gen (List α) := do
+-- Generate exactly 16-element lists for Poseidon2 testing
+def Gen.list16 [Repr α] (x : Gen α) : Gen (List α) := do
   let mut res := []
-  for _ in [:24] do
+  for _ in [:16] do
     res := (← x) :: res
   let final := res.reverse
   dbg_trace s!"Testing with: {repr final}"
@@ -56,8 +56,7 @@ def Gen.list24 [Repr α] (x : Gen α) : Gen (List α) := do
 
 instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
   proxy := List (SampleableExt.proxy α)
-  -- sample := Gen.listOf SampleableExt.sample -- Do not constrain list length
-  sample := Gen.list24 SampleableExt.sample -- Only generate lists of length 24
+  sample := Gen.list16 SampleableExt.sample -- Only generate lists of length 16
   interp := List.map SampleableExt.interp
 
 /-
@@ -82,17 +81,17 @@ def input₁ : Array Nat := Array.range 16
 
 def tests : TestSeq := group "Poseidon2 Lean vs Rust tests" $
   test "input₁" ((
-    (FFI.poseidon2Permute24Nat input₁).toList.map (fun x ↦ Int.ofNat x))
+    (FFI.poseidon2Permute16Nat input₁).toList.map (fun x ↦ Int.ofNat x))
     = 
-    ((Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input₁).toList.map (fun x ↦ x.rep))) $
+    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList.map (fun x ↦ x.rep))) $
   test "input₁-reverse" ((
-    (FFI.poseidon2Permute24Nat input₁).toList.map (fun x ↦ Int.ofNat x))
+    (FFI.poseidon2Permute16Nat input₁).toList.map (fun x ↦ Int.ofNat x))
     = 
-    ((Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input₁).toList.map (fun x ↦ x.rep))) $
+    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList.map (fun x ↦ x.rep))) $
   check "PBT" (∀ (i : List Nat), ((
-    (FFI.poseidon2Permute24Nat i.toArray).toList.map (fun x ↦ Int.ofNat x))
+    (FFI.poseidon2Permute16Nat i.toArray).toList.map (fun x ↦ Int.ofNat x))
     = 
-    ((Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext i.toArray).toList.map (fun x ↦ x.rep))))
+    ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext i.toArray).toList.map (fun x ↦ x.rep))))
 
 def main : IO UInt32 := lspecIO
   tests
