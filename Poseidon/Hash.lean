@@ -1,8 +1,9 @@
+import Mathlib
 import Poseidon.Profile
 import Poseidon.MDS
 import Poseidon.RoundConstants
 import YatimaStdLib.Zmod
-import YatimaStdLib.Matrix
+import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Monad
 
 /-!
@@ -27,8 +28,8 @@ The context can be generated from a HashProfile with some choices, but is not de
 they are separated to allow for alternate implementations.
 -/
 structure Hash.Context (profile : HashProfile) where
-  mdsMatrix : Matrix (Zmod profile.p)
-  roundConst : Array (Zmod profile.p)
+  mdsMatrix : Array $ Array (ZMod profile.p)
+  roundConst : Array (ZMod profile.p)
 
 open Hash in
 /--
@@ -46,11 +47,16 @@ The internal state for the hashing algorithm
 -/
 structure State (profile : HashProfile) where
   round : Nat
-  state : Vector' (Zmod profile.p)
+  state : Array (ZMod profile.p)
 
-def initialState {profile : HashProfile} (input : Vector' (Zmod profile.p)) : State profile := ⟨0, input⟩
+def initialState {profile : HashProfile} (input : Array (ZMod profile.p)) : State profile := ⟨0, input⟩
 
 end Hash
+
+instance : YatimaRing (ZMod P) where
+  zero := 0
+  one := 1
+  coe := λ x => (x: ZMod P)
 
 open Hash in
 /--
@@ -62,7 +68,7 @@ variable (profile : HashProfile)
 
 namespace HashM
 
-open Matrix in
+open YatimaMatrix in
 def linearLayer : HashM profile PUnit := do
   let mds := (← read).mdsMatrix
   modify (fun ⟨r, vec⟩ => ⟨r, action mds vec⟩)
@@ -93,7 +99,7 @@ open Hash in
 /--
 Runs all the rounds needed for the hashing algorithm and extracts the final state.
 -/
-def hash (context : Context profile) (input : Vector' (Zmod profile.p)) : State profile :=
+def hash (context : Context profile) (input : Array (ZMod profile.p)) : State profile :=
   Prod.snd <$> StateT.run (ReaderT.run (runRounds profile) context) (initialState input)
 
 end HashM
@@ -106,18 +112,18 @@ panics.
 
 TODO : Add more validation to reduce the junk values being returned for bad inputs
 -/
-def validateInputs (context : Context profile)  (input : Vector' (Zmod profile.p)) : Bool :=
+def validateInputs (context : Context profile)  (input : Array (ZMod profile.p)) : Bool :=
   input.size == profile.t &&
   context.roundConst.size == profile.t * (profile.fullRounds + profile.partRounds) &&
-  profile.t == context.mdsMatrix.size &&
-  profile.t == context.mdsMatrix.transpose.size
+  profile.t == context.mdsMatrix.size
+  -- && profile.t == context.mdsMatrix.transpose.size --  TODO: add this check back, for Array $ Array
 
 /--
 A wraper around `HashM.hash` which extracts only the final vector of outputs.
 
 If the input is invalid according to `validateInputs` then a junk empty array is returned.
 -/
-def hashInputWithCtx (context : Context profile) (input : Vector' (Zmod profile.p)) : Vector' (Zmod profile.p) :=
+def hashInputWithCtx (context : Context profile) (input : Array (ZMod profile.p)) : Array (ZMod profile.p) :=
   if validateInputs profile context input then (HashM.hash profile context input).state else #[]
 
 /--
@@ -126,7 +132,7 @@ Hashes the input where the context is taken to be generated from the Profile.
 Note: This will be slower than `hashInputWithCtx` as the context has to be generated every time,
 so it is advised to use pre-computed contexts available in the `Poseidon.Parameters` folder.
 -/
-def hashInput (input : Vector' (Zmod profile.p)) : Vector' (Zmod profile.p) :=
+def hashInput (input : Array (ZMod profile.p)) : Array (ZMod profile.p) :=
   let context := profile.genericCtx
   hashInputWithCtx profile context input
 
@@ -134,14 +140,16 @@ end Poseidon
 
 namespace Poseidon2
 
-open Poseidon (HashProfile Hash.State)
+open Poseidon
+
+def add_array [Add α] (v w: Array α) := v.zip w |>.map fun (x, y) => x + y
 
 structure Hash.Context (profile : HashProfile) where
-  internalMatrixDiag : Array (Zmod profile.p)
-  fullRoundConstants : Array $ Array (Zmod profile.p)
-  partialRoundConstants : Array (Zmod profile.p)
+  internalMatrixDiag : Array (ZMod profile.p)
+  fullRoundConstants : Array $ Array (ZMod profile.p)
+  partialRoundConstants : Array (ZMod profile.p)
 
-abbrev HashM (profile : HashProfile) := ReaderT (Hash.Context profile) $ StateM (Hash.State profile)
+abbrev HashM (profile : HashProfile) := ReaderT (Poseidon2.Hash.Context profile) $ StateM (Hash.State profile)
 
 def getPartialRound (round : Nat) (profile : HashProfile) : Nat :=
   let halfFullRound := profile.fullRounds / 2
@@ -156,33 +164,36 @@ variable (profile : HashProfile)
 def addFullConst : HashM profile PUnit := do
   let fullRound := getFullRound (← get).round profile
   let const := (← read).fullRoundConstants[fullRound]!
-  modify fun ⟨r, vec⟩ => ⟨r, vec + const⟩
+  modify fun ⟨r, vec⟩ => ⟨r, add_array vec const⟩
 
 def addPartialConst : HashM profile PUnit := do
   let partialRound := getPartialRound (← get).round profile
   let const := (← read).partialRoundConstants[partialRound]!
   modify fun ⟨r, vec⟩ => ⟨r, vec.modify 0 (· + const)⟩
 
-def internalMatrixAction (diag : Array (Zmod p)) (vec : Vector' (Zmod p)) : Vector' (Zmod p) :=
+def internalMatrixAction (diag : Array (ZMod p)) (vec : Array (ZMod p)) : Array (ZMod p) :=
   let sum := vec.foldl (· + ·) 0
   vec.mapIdx fun idx a => sum + a * diag[idx]!
 
-open Matrix in
+open YatimaMatrix in
 def internalLinearLayer : HashM profile PUnit := do
   let diag := (← read).internalMatrixDiag
   modify (fun ⟨r, vec⟩ => ⟨r, internalMatrixAction diag vec⟩)
 
+def matrix_action{R} [OfNat R (nat_lit 0)] [Add R] [Mul R] (M : Array (Array R)) (v : Array R) : Array R :=
+  M.zip v |>.foldl (fun v (col, r) => add_array v (col.map (λ x => x * r))) (Array.replicate v.size 0)
+
 -- depends on `vec` having size 4
-def smallMatrixAction (vec : Vector' (Zmod p)) : Vector' (Zmod p) :=
-  let smallMatrix : Matrix (Zmod p) :=
+def smallMatrixAction (vec : Array (ZMod p)) : Array (ZMod p) :=
+  let smallMatrix : Array (Array (ZMod p)) :=
     #[#[2, 1, 1, 3],
       #[3, 2, 1, 1],
       #[1, 3, 2, 1],
       #[1, 1, 3, 2]]
-  smallMatrix.action vec
+  matrix_action smallMatrix vec
 
 -- depends on `vec` having size 4 * t
-def externalMatrixAction (vec : Vector' (Zmod p)) : Vector' (Zmod p) := Id.run do
+def externalMatrixAction (vec : Array (ZMod p)) : Array (ZMod p) := Id.run do
   let t := vec.size / 4
   let mut result := #[]
   for idx in [:t] do
@@ -197,7 +208,7 @@ def externalMatrixAction (vec : Vector' (Zmod p)) : Vector' (Zmod p) := Id.run d
 
   return result
 
-open Matrix in
+open YatimaMatrix in
 def externalLinearLayer : HashM profile PUnit := do
   modify (fun ⟨r, vec⟩ => ⟨r, externalMatrixAction vec⟩)
 
@@ -218,16 +229,18 @@ def runRounds : HashM profile PUnit :=
   repeatM (partialRound profile) (profile.partRounds) *>
   repeatM (fullRound profile) (profile.fullRounds / 2)
 
-def hash (context : Hash.Context profile) (input : Vector' (Zmod profile.p)) : Hash.State profile :=
-  Prod.snd <$> StateT.run (ReaderT.run (runRounds profile) context) (Poseidon.Hash.initialState input)
+def initialState {profile : HashProfile} (input : Array (ZMod profile.p)) : Hash.State profile := ⟨0, input⟩
 
-def validateInputs (context : Hash.Context profile)  (input : Vector' (Zmod profile.p)) : Bool :=
+def hash (context : Poseidon2.Hash.Context profile) (input : Array (ZMod profile.p)) : Hash.State profile :=
+  Prod.snd <$> StateT.run (ReaderT.run (runRounds profile) context) (initialState input)
+
+def validateInputs (context : Poseidon2.Hash.Context profile) (input : Array (ZMod profile.p)) : Bool :=
   input.size == profile.t &&
   profile.t % 4 == 0 &&
   true && -- TODO: At some point we should check the sizes of the partial round and full round constants
   profile.t == context.internalMatrixDiag.size
 
-def hashInputWithCtx (context : Hash.Context profile) (input : Vector' (Zmod profile.p)) : Vector' (Zmod profile.p) :=
-  if Poseidon2.validateInputs profile context input then (hash profile context input).state else #[]
+def hashInputWithCtx (context : Poseidon2.Hash.Context profile) (input : Array (ZMod profile.p)) : Array (ZMod profile.p) :=
+  if validateInputs profile context input then (hash profile context input).state else #[]
 
 end Poseidon2

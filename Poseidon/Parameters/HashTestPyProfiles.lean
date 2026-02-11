@@ -1,6 +1,6 @@
 import Poseidon.Hash
 import Poseidon.Profile
-import YatimaStdLib.Matrix
+import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Zmod
 
 /-!
@@ -221,7 +221,7 @@ def roundConstants : Vector' (Zmod pyProfile254.p) :=
   0x216f6717bbc7dedb08536a2220843f4e2da5f1daa9ebdefde8a5ea7344798d22,
   0x1da55cc900f0d21f4a3e694391918a1b3c23b2ac773c6b3ef88e2e4228325161]
 
-def MDS : Matrix (Zmod pyProfile254.p) := 
+def MDS : YatimaMatrix (Zmod pyProfile254.p) := 
 #[#[0x109b7f411ba0e4c9b2b70caf5c36a7b194be7c11ad24378bfedb68592ba8118b,
     0x16ed41e13bb9c0c66ae119424fddbcbc9314dc9fdbdeea55d6c64543dc4903e0,
     0x2b90bba00fca0589f617e7dcbfe82e0df706ab640ceb247b791a93b74e36736d],
@@ -589,7 +589,7 @@ def roundConstants : Vector' (Zmod pyProfile255.p) :=
   0x207c7c32631a75fe8e0da895367176d24e32c5573ec91acf235f3c6c307807cd,
   0x20f955773b13b160d3575eb2380b466f7d38cb4a0e12a15d43d147645c3944ca]
 
-def MDS : Matrix (Zmod pyProfile255.p) :=
+def MDS : YatimaMatrix (Zmod pyProfile255.p) :=
 #[#[0x354423b163d1078b0dd645be56316e34a9b98e52dcf9f469be44b108be46c107,
     0x44778737e8bc1154aca1cd92054a1e5b83808403705f7d54da88bbd1920e1053,
     0x5872eefb5ab6b2946556524168a2aebb69afd513a2fff91e50167b1f6e4055e0,

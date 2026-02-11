@@ -1,5 +1,5 @@
 import Poseidon.Profile
-import YatimaStdLib.Matrix
+import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Zmod
 
 /-!

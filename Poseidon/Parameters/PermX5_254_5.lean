@@ -1,6 +1,6 @@
 import Poseidon.Hash
 import Poseidon.Profile
-import YatimaStdLib.Matrix
+import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Zmod
 
 /-!
@@ -26,7 +26,7 @@ def PermX5_254_5 : HashProfile := {
 
 namespace PermX5_254_5
 
-def MDS : Matrix (Zmod PermX5_254_5.p) := Matrix.transpose 
+def MDS : YatimaMatrix (Zmod PermX5_254_5.p) := YatimaMatrix.transpose 
 #[#[0x251e7fdf99591080080b0af133b9e4369f22e57ace3cd7f64fc6fdbcf38d7da1,
     0x25fb50b65acf4fb047cbd3b1c17d97c7fe26ea9ca238d6e348550486e91c7765,
     0x293d617d7da72102355f39ebf62f91b06deb5325f367a4556ea1e31ed5767833,

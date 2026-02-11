@@ -9,7 +9,7 @@ The inputs to `Poseidon.hash` are
 * `HashProfile` : Contains the parameters prime `p`, width `t`, security parameters `M`, and S-box exponent `a`
 * `Hash.Context` : Contains the necessary parameters to compute the Poseidon hash, in particular
   the MDS matrix and the array of round constants.
-* `Array (Zmod profile.p)` : The message to hash. If the length of the array does not match the specified arity
+* `Array (ZMod profile.p)` : The message to hash. If the length of the array does not match the specified arity
   a dummy value of `0` is returned
 * `Domain` : The domain in which to hash the function. Right now it is either a fixed-arity Merkle tree hash
   or fixed length input
@@ -32,17 +32,17 @@ Prepares the preimage to serve as an input to the Poseidon hash function by prep
 tag and padding when necessary
 -/
 def getInput (prof : HashProfile)
-             (preimage : Array (Zmod prof.p))
-             (domain : Domain) : Option $ Array $ Zmod prof.p :=
+             (preimage : Array (ZMod prof.p))
+             (domain : Domain) : Option $ Array $ ZMod prof.p :=
   match domain with
     | .merkleTree =>
       if preimage.size != prof.t - 1 then none else
-        let domainTag : Zmod prof.p := ⟨.ofNat $ 2^(preimage.size) -1⟩
+        let domainTag : ZMod prof.p := 2^(preimage.size) -1
         some $ #[domainTag] ++ preimage
     | .fixedLength  =>
       if preimage.size > prof.t - 1 then none else
-        let domainTag : Zmod prof.p := ⟨.ofNat $ 2^64 * preimage.size⟩
-        let padding : Array $ Zmod prof.p := Array.replicate (prof.t - 1 - preimage.size) 0
+        let domainTag : ZMod prof.p := 2^64 * preimage.size
+        let padding : Array $ ZMod prof.p := Array.replicate (prof.t - 1 - preimage.size) 0
         some $ #[domainTag] ++ preimage ++ padding
 
 /--
@@ -53,8 +53,8 @@ If the input size is mis-matched with the expected arity, then the hash returns 
 -/
 def hash (prof : HashProfile)
          (context : Hash.Context prof)
-         (preimage : Array (Zmod prof.p))
-         (domain : Domain) : Zmod prof.p :=
+         (preimage : Array (ZMod prof.p))
+         (domain : Domain) : ZMod prof.p :=
   let input? := getInput prof preimage domain
   match input? with
     | none       => 0

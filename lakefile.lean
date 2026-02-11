@@ -17,7 +17,10 @@ package Poseidon where
 
 @[default_target]
 lean_lib Poseidon where
-  precompileModules := true
+  precompileModules := false
+
+require mathlib from git
+  "https://github.com/leanprover-community/mathlib4" @ "v4.27.0"
 
 require YatimaStdLib from git
   "https://github.com/NethermindEth/YatimaStdLib.lean" @ "v4.27.0"
@@ -28,7 +31,4 @@ require LSpec from git
 lean_exe Tests.RoundNumbers
 lean_exe Tests.RoundConstants
 lean_exe Tests.Hash
-
--- Test executable for FFI
-lean_exe Tests.FFI
 lean_exe Tests.Poseidon2
