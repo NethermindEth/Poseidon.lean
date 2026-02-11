@@ -64,7 +64,21 @@ instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
 # End of section of code based on Mathlib v4.12.0
 -/
 
-def input₁ : Array Nat := Array.range 24
+def input₁ : Array Nat := Array.range 16
+
+#eval List.map (λ ( x : Zmod BabyBear.p)  ↦ x.rep) (Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input₁).toList
+
+-- Rust Poseidon2 Hash output on input [0..15]:
+--   [1906786279, 1737026427, 1959749225, 700325316, 1638050605, 1021608788, 1726691001, 1761127344, 1552405120, 417318995, 36799261, 1215172152, 614923223, 1300746575, 957311597, 304856115]
+--   [1906786279, 1737026427, 1959749225, 700325316, 1638050605, 1021608788, 1726691001, 1761127344, 1552405120, 417318995, 36799261, 1215172152, 614923223, 1300746575, 957311597, 304856115]
+-- And above line is Lean output from #eval above
+
+-- Last 4 from Rust: 614923223, 1300746575, 957311597, 304856115
+-- Last 4 from Lean: 614923223, 1300746575, 957311597, 304856115
+
+-- 916771791, 1584598824, 189674455, 1963929763 -- before copying over full round and partial round constants
+-- 916771791, 1584598824, 189674455, 1963929763 -- after copying over full round and partial round constants
+
 
 def tests : TestSeq := group "Poseidon2 Lean vs Rust tests" $
   test "input₁" ((
