@@ -53,8 +53,19 @@ def Gen.list16 [Repr α] (x : Gen α) : Gen (List α) := do
   let final := res.reverse
   dbg_trace s!"Testing with: {repr final}"
   return final
+  
+-- Generate exactly 24-element lists for Poseidon2 testing
+def Gen.list24 [Repr α] (x : Gen α) : Gen (List α) := do
+  let mut res := []
+  for _ in [:24] do
+    res := (← x) :: res
+  let final := res.reverse
+  dbg_trace s!"Testing with: {repr final}"
+  return final
 
-instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
+namespace width16
+
+local instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
   proxy := List (SampleableExt.proxy α)
   sample := Gen.list16 SampleableExt.sample -- Only generate lists of length 16
   interp := List.map SampleableExt.interp
@@ -93,9 +104,46 @@ def tests : TestSeq := group "Poseidon2 Lean vs Rust tests" $
     = 
     ((Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext i.toArray).toList.map (fun x ↦ x.cast))))
 
+end width16
+
+namespace width24
+
+local instance List.sampleableExt [SampleableExt α] : SampleableExt (List α) where
+  proxy := List (SampleableExt.proxy α)
+  sample := Gen.list24 SampleableExt.sample -- Only generate lists of length 24
+  interp := List.map SampleableExt.interp
+
+/-
+# End of section of code based on Mathlib v4.12.0
+-/
+
+def input₁ : Array Nat := Array.range 24
+
+#eval input₁
+#eval List.map (λ ( x : ZMod BabyBear.p)  ↦ (x.cast : ℤ)) (Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input₁).toList
+
+-- Rust Poseidon2 Hash output on input [0..23]:
+--   [1771108703, 1707989511, 1600983599, 1040326054, 1894886368, 1111683018, 345926078, 1375535692, 867525720, 8311067, 1861712515, 1511177830, 1933967479, 1240935237, 552758551, 1534019729, 1277506434, 1879040535, 1361987653, 420733846, 117604165, 874383778, 91790175, 890256414]
+
+def tests : TestSeq := group "Poseidon2 Lean vs Rust tests - width 24" $
+  test "input₁" (
+    [] -- TODO -- (FFI.poseidon2Permute24Nat input₁).toList.map (fun x ↦ Int.ofNat x))
+    = 
+    ((Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input₁).toList.map (fun x ↦ (x.cast : ℤ)))) $
+  test "input₁-reverse" (
+    [] -- TODO -- (FFI.poseidon2Permute24Nat input₁).toList.map (fun x ↦ Int.ofNat x))
+    = 
+    ((Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input₁).toList.map (fun x ↦ (x.cast : ℤ)))) $
+  check "PBT" (∀ (i : List Nat), (
+    [] -- TODO -- (FFI.poseidon2Permute24Nat i.toArray).toList.map (fun x ↦ Int.ofNat x))
+    = 
+    ((Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext i.toArray).toList.map (fun x ↦ (x.cast : ℤ)))))
+
+end width24
+
 def tests' :=
   @Std.HashMap.ofList String (List TestSeq) instBEqOfDecidableEq instHashableString
-    [("tests", [tests])]
+    [("width 16 tests", [width16.tests]), ("width 24 tests", [width24.tests])]
 
 def main : IO UInt32 := lspecIO
   tests' []
