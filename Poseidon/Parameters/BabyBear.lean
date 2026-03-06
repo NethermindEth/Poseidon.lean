@@ -92,7 +92,7 @@ end BabyBear16
 
 namespace BabyBear24
 
-def secProfile : SecProfile := { BabyBear.commonProfile with t := 24 }
+def secProfile : SecProfile := { BabyBear.commonProfile with t := 24, a := 11 }
 
 def hashProfile : HashProfile := {
   secProfile with
