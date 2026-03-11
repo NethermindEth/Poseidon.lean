@@ -36,9 +36,9 @@ def runWith {α : Type} (seed : Nat) (x : Gen α) (size : ℕ) : BaseIO α :=
 
 def constructRustTest (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
   let testNum := idx + 1
-  "        let input" ++ testNum.repr ++ ": Vec<Scalar> = vec!" ++ l.toString ++ ".into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n"
-  ++ "        let perm" ++ testNum.repr ++ " = instance" ++ width.repr ++ ".permutation(&input" ++ testNum.repr ++ ");\n"
-  ++ "        println!(\"Width " ++ width.repr ++ " Output " ++ testNum.repr ++ ": {:?}\", perm" ++ testNum.repr ++ ");\n"
+  s!"        let input{testNum}: Vec<Scalar> = vec!{l}.into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n" ++
+  s!"        let perm{testNum} = instance{width}.permutation(&input{testNum});\n" ++
+  s!"        println!(\"Width {width} Output {testNum}: {"{"}:?{"}"}\", perm{testNum});\n"
 
 def rustBefore16 : String :=
    "#[cfg(test)]
