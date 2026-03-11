@@ -30,11 +30,16 @@ def generateTestCases : Gen (List (List ℤ)) := do
   let l₄ ← generateRandomLists 100 1000 1000
   return l₁ ++ l₂ ++ l₃ ++ l₄
 
+-- Based on `#print Gen.run`
+def runWith {α : Type} (seed : Nat) (x : Gen α) (size : ℕ) : BaseIO α :=
+  SlimCheck.IO.runRandWith seed (ReaderT.run x { down := size })
+
 def printTests : IO Unit := do
+  let seed := 42
   let g := generateTestCases
-  let l16 ← g.run 16
+  let l16 ← runWith seed g 16
   IO.println l16
-  let l24 ← g.run 24
+  let l24 ← runWith seed g 24
   IO.println l24
 
 #eval printTests
