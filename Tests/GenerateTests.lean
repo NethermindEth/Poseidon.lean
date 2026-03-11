@@ -34,12 +34,54 @@ def generateTestCases : Gen (List (List ℤ)) := do
 def runWith {α : Type} (seed : Nat) (x : Gen α) (size : ℕ) : BaseIO α :=
   SlimCheck.IO.runRandWith seed (ReaderT.run x { down := size })
 
-def printTests : IO Unit := do
+def constructRustTest (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
+  let testNum := idx + 1
+  "        let input" ++ testNum.repr ++ ": Vec<Scalar> = vec!" ++ l.toString ++ ".into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n"
+  ++ "        let perm" ++ testNum.repr ++ " = instance" ++ width.repr ++ ".permutation(&input" ++ testNum.repr ++ ");\n"
+  ++ "        println!(\"Width " ++ width.repr ++ " Output " ++ testNum.repr ++ ": {:?}\", perm" ++ testNum.repr ++ ");\n"
+
+def rustBefore16 : String :=
+   "#[cfg(test)]
+mod poseidon2_tests_babybear {
+    use crate::{fields::{babybear::FpBabyBear}, poseidon2::poseidon2::Poseidon2};
+    use crate::poseidon2::poseidon2_instance_babybear::{
+        POSEIDON2_BABYBEAR_16_PARAMS,
+        POSEIDON2_BABYBEAR_24_PARAMS,
+    };
+
+    type Scalar = FpBabyBear;
+
+    #[test]
+    fn tests16() {
+        let instance16 = Poseidon2::new(&POSEIDON2_BABYBEAR_16_PARAMS);
+"
+
+def rustAfter16Before24 : String :=
+  "    }
+
+    #[test]
+    fn tests24() {
+        let instance24 = Poseidon2::new(&POSEIDON2_BABYBEAR_24_PARAMS);
+  "
+
+def rustAfter24 : String := "
+    }
+}
+"
+
+def printHorizenLabsRustTests : IO Unit := do
   let seed := 42
   let g := generateTestCases
   let l16 ← runWith seed g 16
-  IO.println l16
   let l24 ← runWith seed g 24
-  IO.println l24
+  
+  IO.println rustBefore16
+  IO.println ((l16.mapIdx (constructRustTest 16)).foldl (fun x y => x ++ "\n" ++ y) "")
+  IO.println rustAfter16Before24
+  IO.println ((l24.mapIdx (constructRustTest 24)).foldl (fun x y => x ++ "\n" ++ y) "")
+  IO.println rustAfter24
 
-#eval printTests
+-- #eval printHorizenLabsRustTests
+
+def main : IO Unit :=
+  printHorizenLabsRustTests
