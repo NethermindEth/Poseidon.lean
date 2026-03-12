@@ -71,3 +71,12 @@ tested and how the tests were generated.
 
 Included in the test suite are tests that check the parameters contained in the pre-computed profiles
 match those that would be computed according to the relevant specification in which they are defined.
+
+### Poseidon 2 Tests
+
+The Poseidon 2 tests compare the output of the hash with a version of the HorizenLabs implementation of Poseidon 2. These tests can be run by:
+
+  1. Running `nix develop` (ensure Nix is installed, with flakes support, see https://nixos.org).
+  2. Running `./poseidon2Tests.sh` (first check that `../TestingPoseidon2Spec` does not already exist).
+
+The tests are defined in `Tests/GenerateTests.lean`.
