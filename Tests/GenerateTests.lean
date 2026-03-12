@@ -36,45 +36,36 @@ def runWith {α : Type} (seed : Nat) (x : Gen α) (size : ℕ) : BaseIO α :=
 
 def constructRustTest (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
   let testNum := idx + 1
-  s!"        let input{testNum}: Vec<Scalar> = vec!{l}.into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n" ++
-  s!"        let perm{testNum} = instance{width}.permutation(&input{testNum});\n" ++
-  s!"        print_baby_bear_vec(perm{testNum});\n"
+  s!"    let input{testNum}: Vec<Scalar> = vec!{l}.into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n" ++
+  s!"    let perm{testNum} = instance{width}.permutation(&input{testNum});\n" ++
+  s!"    print_baby_bear_vec(perm{testNum});\n"
 
 def rustBefore16 : String :=
-   "#[cfg(test)]
-mod poseidon2_tests_babybear {
-    use itertools::Itertools;
-    
-    use crate::{fields::{babybear::FpBabyBear}, poseidon2::poseidon2::Poseidon2};
-    use crate::poseidon2::poseidon2_instance_babybear::{
-        POSEIDON2_BABYBEAR_16_PARAMS,
-        POSEIDON2_BABYBEAR_24_PARAMS,
-    };
+   "use itertools::Itertools;
+use zkhash::{fields::babybear::FpBabyBear, poseidon2::{poseidon2::Poseidon2, poseidon2_instance_babybear::{POSEIDON2_BABYBEAR_16_PARAMS, POSEIDON2_BABYBEAR_24_PARAMS}}};
 
-    type Scalar = FpBabyBear;
-    
-    fn print_baby_bear_vec(l : Vec<Scalar>) {
-        let l2 : Vec<String> = l.into_iter().map(|x| format!(\"{}\", x)).collect();
-        println!(\"[{}]\", l2.iter().format(\", \"));
-    }
+type Scalar = FpBabyBear;
 
-    #[test]
-    fn tests16() {
-        let instance16 = Poseidon2::new(&POSEIDON2_BABYBEAR_16_PARAMS);
-"
+pub fn main() {
+    tests16();
+    tests24();
+}
+
+fn print_baby_bear_vec(l : Vec<Scalar>) {
+    let l2 : Vec<String> = l.into_iter().map(|x| format!(\"{}\", x)).collect();
+    println!(\"[{}]\", l2.iter().format(\", \"));
+}
+
+fn tests16() {
+    let instance16 = Poseidon2::new(&POSEIDON2_BABYBEAR_16_PARAMS);"
 
 def rustAfter16Before24 : String :=
-  "    }
+  "}
 
-    #[test]
-    fn tests24() {
-        let instance24 = Poseidon2::new(&POSEIDON2_BABYBEAR_24_PARAMS);
-  "
+fn tests24() {
+    let instance24 = Poseidon2::new(&POSEIDON2_BABYBEAR_24_PARAMS);"
 
-def rustAfter24 : String := "
-    }
-}
-"
+def rustAfter24 : String := "}"
 
 def printHorizenLabsRustTests : IO Unit := do
   let seed := 42
