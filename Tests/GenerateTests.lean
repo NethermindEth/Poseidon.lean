@@ -1,6 +1,9 @@
 import Mathlib
 import LSpec
+import Poseidon.Hash
+import Poseidon.Parameters.BabyBear
 
+open Poseidon2
 open LSpec
 open SlimCheck
 
@@ -81,5 +84,28 @@ def printHorizenLabsRustTests : IO Unit := do
 
 -- #eval printHorizenLabsRustTests
 
-def main : IO Unit :=
-  printHorizenLabsRustTests
+def runLeanTestWidth16 (input16 : List ℤ) : List ℤ :=
+  let input16' := (List.map (fun (x : ZMod BabyBear.p) ↦ x.cast) input16).toArray
+  (Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext input16').toList.map (fun (x : ZMod BabyBear.p) ↦ x.cast)
+
+def runLeanTestWidth24 (input24 : List ℤ) : List ℤ :=
+  let input24' := (List.map (fun (x : ZMod BabyBear.p) ↦ x.cast) input24).toArray
+  (Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input24').toList.map (fun (x : ZMod BabyBear.p) ↦ x.cast)
+
+def printLeanOutputs : IO Unit := do
+  let seed := 42
+  let g := generateTestCases
+  let l16 ← runWith seed g 16
+  let l24 ← runWith seed g 24
+  
+  IO.println ((l16.map (runLeanTestWidth16)).foldl (fun x y => s!"{x}\n{y}") "")
+  IO.println ((l24.map (runLeanTestWidth24)).foldl (fun x y => s!"{x}\n{y}") "")
+
+-- #eval printLeanOutputs
+
+def main (args : List String) : IO UInt32 := do
+  let arg0Opt : Option String := if h : args.length = 0 then .none else .some args[0]
+  match arg0Opt with
+  | .some "HorizenLabsRust" => printHorizenLabsRustTests; pure 0
+  | .some "LeanOutputs" => printLeanOutputs; pure 0
+  | _ => IO.println "Provide one of 'HorizenLabsRust' or 'LeanOutputs' as a command line argument"; pure 1
