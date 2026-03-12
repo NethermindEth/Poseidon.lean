@@ -38,11 +38,13 @@ def constructRustTest (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
   let testNum := idx + 1
   s!"        let input{testNum}: Vec<Scalar> = vec!{l}.into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n" ++
   s!"        let perm{testNum} = instance{width}.permutation(&input{testNum});\n" ++
-  s!"        println!(\"Width {width} Output {testNum}: {"{"}:?{"}"}\", perm{testNum});\n"
+  s!"        print_baby_bear_vec(perm{testNum});\n"
 
 def rustBefore16 : String :=
    "#[cfg(test)]
 mod poseidon2_tests_babybear {
+    use itertools::Itertools;
+    
     use crate::{fields::{babybear::FpBabyBear}, poseidon2::poseidon2::Poseidon2};
     use crate::poseidon2::poseidon2_instance_babybear::{
         POSEIDON2_BABYBEAR_16_PARAMS,
@@ -50,6 +52,11 @@ mod poseidon2_tests_babybear {
     };
 
     type Scalar = FpBabyBear;
+    
+    fn print_baby_bear_vec(l : Vec<Scalar>) {
+        let l2 : Vec<String> = l.into_iter().map(|x| format!(\"{}\", x)).collect();
+        println!(\"[{}]\", l2.iter().format(\", \"));
+    }
 
     #[test]
     fn tests16() {
