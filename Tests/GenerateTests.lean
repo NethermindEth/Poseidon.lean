@@ -50,7 +50,9 @@ use zkhash::{fields::babybear::FpBabyBear, poseidon2::{poseidon2::Poseidon2, pos
 type Scalar = FpBabyBear;
 
 pub fn main() {
+    println!(\"Width 16:\");
     tests16();
+    println!(\"Width 24:\");
     tests24();
 }
 
@@ -98,7 +100,9 @@ def printLeanOutputs : IO Unit := do
   let l16 ← runWith seed g 16
   let l24 ← runWith seed g 24
   
+  IO.print "Width 16:"
   IO.println ((l16.map (runLeanTestWidth16)).foldl (fun x y => s!"{x}\n{y}") "")
+  IO.print "Width 24:"
   IO.println ((l24.map (runLeanTestWidth24)).foldl (fun x y => s!"{x}\n{y}") "")
 
 -- #eval printLeanOutputs
