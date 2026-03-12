@@ -20,3 +20,4 @@ lean_exe Tests.RoundNumbers
 lean_exe Tests.RoundConstants
 lean_exe Tests.Hash
 lean_exe Tests.Poseidon2
+lean_exe Tests.GenerateTests
