@@ -37,13 +37,13 @@ def generateTestCases : Gen (List (List ℤ)) := do
 def runWith {α : Type} (seed : Nat) (x : Gen α) (size : ℕ) : BaseIO α :=
   SlimCheck.IO.runRandWith seed (ReaderT.run x { down := size })
 
-def constructRustTest (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
+def constructHorizenLabsRustTest (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
   let testNum := idx + 1
   s!"    let input{testNum}: Vec<Scalar> = vec!{l}.into_iter().map(|x: usize| FpBabyBear::from(x as u32)).collect();\n" ++
   s!"    let perm{testNum} = instance{width}.permutation(&input{testNum});\n" ++
   s!"    print_baby_bear_vec(perm{testNum});\n"
 
-def rustBefore16 : String :=
+def rustHLBefore16 : String :=
    "use itertools::Itertools;
 use zkhash::{fields::babybear::FpBabyBear, poseidon2::{poseidon2::Poseidon2, poseidon2_instance_babybear::{POSEIDON2_BABYBEAR_16_PARAMS, POSEIDON2_BABYBEAR_24_PARAMS}}};
 
@@ -64,13 +64,13 @@ fn print_baby_bear_vec(l : Vec<Scalar>) {
 fn tests16() {
     let instance16 = Poseidon2::new(&POSEIDON2_BABYBEAR_16_PARAMS);"
 
-def rustAfter16Before24 : String :=
+def rustHLAfter16Before24 : String :=
   "}
 
 fn tests24() {
     let instance24 = Poseidon2::new(&POSEIDON2_BABYBEAR_24_PARAMS);"
 
-def rustAfter24 : String := "}"
+def rustHLAfter24 : String := "}"
 
 def printHorizenLabsRustTests : IO Unit := do
   let seed := 42
@@ -78,13 +78,51 @@ def printHorizenLabsRustTests : IO Unit := do
   let l16 ← runWith seed g 16
   let l24 ← runWith seed g 24
   
-  IO.println rustBefore16
-  IO.println ((l16.mapIdx (constructRustTest 16)).foldl (fun x y => x ++ "\n" ++ y) "")
-  IO.println rustAfter16Before24
-  IO.println ((l24.mapIdx (constructRustTest 24)).foldl (fun x y => x ++ "\n" ++ y) "")
-  IO.println rustAfter24
+  IO.println rustHLBefore16
+  IO.println ((l16.mapIdx (constructHorizenLabsRustTest 16)).foldl (fun x y => x ++ "\n" ++ y) "")
+  IO.println rustHLAfter16Before24
+  IO.println ((l24.mapIdx (constructHorizenLabsRustTest 24)).foldl (fun x y => x ++ "\n" ++ y) "")
+  IO.println rustHLAfter24
 
 -- #eval printHorizenLabsRustTests
+
+def constructPlonky3NonAirRustTest  (width : ℕ) (idx : ℕ) (l : List ℤ) : String :=
+  let testNum := idx + 1
+  s!"    let input{testNum} = {l}.map(|x: u32| BabyBear::new(x as u32));\n" ++
+  s!"    let perm{testNum} : Vec<u32> = poseidon2_width{width}.permute(input{testNum}).iter().map(|x| x.as_canonical_u32()).collect();\n" ++
+  s!"    println!(\"{"{"}:?{"}"}\", perm{testNum});\n"
+
+def rustP3Before16 : String :=
+   "use p3_baby_bear::{BabyBear, default_babybear_poseidon2_16, default_babybear_poseidon2_24};
+use p3_field::PrimeField32;
+use p3_symmetric::Permutation;
+
+fn main() {
+    let poseidon2_width16 = default_babybear_poseidon2_16();
+    let poseidon2_width24 = default_babybear_poseidon2_24();
+    
+    println!(\"Width 16:\");
+"
+
+def rustP3After16Before24 : String :=
+  "    println!(\"Width 24:\");
+"
+
+def rustP3After24 : String := "}"
+
+def printPlonky3NonAirRustTests : IO Unit := do
+  let seed := 42
+  let g := generateTestCases
+  let l16 ← runWith seed g 16
+  let l24 ← runWith seed g 24
+  
+  IO.println rustP3Before16
+  IO.println ((l16.mapIdx (constructPlonky3NonAirRustTest 16)).foldl (fun x y => x ++ "\n" ++ y) "")
+  IO.println rustP3After16Before24
+  IO.println ((l24.mapIdx (constructPlonky3NonAirRustTest 24)).foldl (fun x y => x ++ "\n" ++ y) "")
+  IO.println rustP3After24
+
+-- #eval printPlonky3NonAirRustTests
 
 def runLeanTestWidth16 (input16 : List ℤ) : List ℤ :=
   let input16' := (List.map (fun (x : ZMod BabyBear.p) ↦ x.cast) input16).toArray
@@ -111,5 +149,6 @@ def main (args : List String) : IO UInt32 := do
   let arg0Opt : Option String := if h : args.length = 0 then .none else .some args[0]
   match arg0Opt with
   | .some "HorizenLabsRust" => printHorizenLabsRustTests; pure 0
+  | .some "Plonky3NonAirRust" => printPlonky3NonAirRustTests; pure 0
   | .some "LeanOutputs" => printLeanOutputs; pure 0
-  | _ => IO.println "Provide one of 'HorizenLabsRust' or 'LeanOutputs' as a command line argument"; pure 1
+  | _ => IO.println "Provide one of 'HorizenLabsRust', 'Plonky3NonAirRust' or 'LeanOutputs' as a command line argument"; pure 1
