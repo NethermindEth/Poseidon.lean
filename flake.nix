@@ -14,7 +14,7 @@
       {
         defaultPackage = naersk-lib.buildPackage ./.;
         devShell = with pkgs; mkShell {
-          buildInputs = [ cargo rustc rustfmt pre-commit rustPackages.clippy rust-jemalloc-sys lldb ];
+          buildInputs = [ cargo rustc rustfmt pre-commit rustPackages.clippy rust-jemalloc-sys lldb elan ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
         };
       }
