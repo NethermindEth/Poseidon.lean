@@ -93,13 +93,13 @@ def constructPlonky3NonAirRustTest  (width : ℕ) (idx : ℕ) (l : List ℤ) : S
   s!"    println!(\"{"{"}:?{"}"}\", perm{testNum});\n"
 
 def rustP3Before16 : String :=
-   "use p3_baby_bear::{BabyBear, default_babybear_poseidon2_16, default_babybear_poseidon2_24};
+   "use p3_baby_bear::{BabyBear, default_babybear_poseidon2_16, default_babybear_poseidon2_24_sbox_11};
 use p3_field::PrimeField32;
 use p3_symmetric::Permutation;
 
 fn main() {
     let poseidon2_width16 = default_babybear_poseidon2_16();
-    let poseidon2_width24 = default_babybear_poseidon2_24();
+    let poseidon2_width24 = default_babybear_poseidon2_24_sbox_11();
     
     println!(\"Width 16:\");
 "
