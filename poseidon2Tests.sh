@@ -15,11 +15,21 @@ popd
 mkdir "$TESTDIRECTORY/HorizenLabs-poseidon2/plain_implementations/examples"
 lake exe Tests.GenerateTests HorizenLabsRust > "$TESTDIRECTORY/HorizenLabs-poseidon2/plain_implementations/examples/poseidon2_tests.rs"
 pushd "$TESTDIRECTORY/HorizenLabs-poseidon2/plain_implementations/"
-cargo run --example poseidon2_tests > "$TESTDIRECTORY/rustOut.txt"
+cargo run --example poseidon2_tests > "$TESTDIRECTORY/rustHLOut.txt"
 popd
+
+pushd "$TESTDIRECTORY"
+git clone -b Dan/PBT https://github.com/NethermindEth/Plonky3.git
+popd
+mkdir "$TESTDIRECTORY/Plonky3/poseidon2/examples"
+lake exe Tests.GenerateTests Plonky3NonAirRust > "$TESTDIRECTORY/Plonky3/poseidon2/examples/poseidon2_tests.rs"
+pushd "$TESTDIRECTORY/Plonky3/"
+cargo run --package p3-poseidon2 --example poseidon2_tests > "$TESTDIRECTORY/rustP3Out.txt"
+popd
+
 lake exe Tests.GenerateTests LeanOutputs > "$TESTDIRECTORY/leanOut.txt"
 
-diff "$TESTDIRECTORY/rustOut.txt" "$TESTDIRECTORY/leanOut.txt"
+diff3 "$TESTDIRECTORY/rustHLOut.txt" "$TESTDIRECTORY/rustP3Out.txt" "$TESTDIRECTORY/leanOut.txt"
 COMPARISON_RESULT=$?
 
 if [ $COMPARISON_RESULT -eq 1 ]
