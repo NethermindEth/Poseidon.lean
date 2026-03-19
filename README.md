@@ -74,9 +74,9 @@ match those that would be computed according to the relevant specification in wh
 
 ### Poseidon 2 Tests
 
-The Poseidon 2 tests compare the output of the hash with a version of the HorizenLabs implementation of Poseidon 2. These tests can be run by:
+The Poseidon 2 tests compare the output of the hash with a version of the HorizenLabs implementation of Poseidon 2 and a version of Poseidon 2 from the Plonky3 repo (that is different from the AIR version). These tests can be run by:
 
-  1. Running `nix develop` (ensure Nix is installed, with flakes support, see https://nixos.org).
+  1. Running `nix-shell` or `nix develop` (ensure Nix is installed, with flakes support for `nix develop`, see https://nixos.org). Alternatively, ensure dependencies equivalent to `buildInputs` in flake.nix are installed.
   2. Optionally, run `lake exe cache get` to speed up the build using the precompiled files for the dependency Mathlib.
   3. Running `./poseidon2Tests.sh` (first check that `../TestingPoseidon2Spec` does not already exist).
 
