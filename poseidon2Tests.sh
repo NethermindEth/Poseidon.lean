@@ -19,7 +19,7 @@ cargo run --example poseidon2_tests > "$TESTDIRECTORY/rustHLOut.txt"
 popd
 
 pushd "$TESTDIRECTORY"
-git clone -b main-poseidon2 https://github.com/NethermindEth/Plonky3.git
+git clone -b Dom/extraction_deliverable https://github.com/NethermindEth/Plonky3.git
 popd
 mkdir "$TESTDIRECTORY/Plonky3/poseidon2/examples"
 lake exe Tests.GenerateTests Plonky3NonAirRust > "$TESTDIRECTORY/Plonky3/poseidon2/examples/poseidon2_tests.rs"
