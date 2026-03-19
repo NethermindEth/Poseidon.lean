@@ -10,7 +10,7 @@ fi
 
 mkdir "$TESTDIRECTORY"
 pushd "$TESTDIRECTORY"
-git clone -b Dan/PBT https://github.com/NethermindEth/HorizenLabs-poseidon2.git
+git clone -b main https://github.com/NethermindEth/HorizenLabs-poseidon2.git
 popd
 mkdir "$TESTDIRECTORY/HorizenLabs-poseidon2/plain_implementations/examples"
 lake exe Tests.GenerateTests HorizenLabsRust > "$TESTDIRECTORY/HorizenLabs-poseidon2/plain_implementations/examples/poseidon2_tests.rs"
@@ -19,7 +19,7 @@ cargo run --example poseidon2_tests > "$TESTDIRECTORY/rustHLOut.txt"
 popd
 
 pushd "$TESTDIRECTORY"
-git clone -b Dan/PBT https://github.com/NethermindEth/Plonky3.git
+git clone -b main-poseidon2 https://github.com/NethermindEth/Plonky3.git
 popd
 mkdir "$TESTDIRECTORY/Plonky3/poseidon2/examples"
 lake exe Tests.GenerateTests Plonky3NonAirRust > "$TESTDIRECTORY/Plonky3/poseidon2/examples/poseidon2_tests.rs"
