@@ -211,6 +211,6 @@ def main : IO UInt32 := do
   IO.println "------------------------"
   IO.println "Testing hash calculation"
   IO.println "------------------------"
-  lspecIO $ refTests ++ pyTests ++ rustTests
+  lspecEachIO [refTests ++ pyTests ++ rustTests] pure
 
 #eval main

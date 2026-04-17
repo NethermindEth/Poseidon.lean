@@ -61,4 +61,4 @@ def main : IO UInt32 := do
   IO.println "---------------------------------"
   IO.println "Testing round constant generation"
   IO.println "---------------------------------"
-  lspecIO $ refTest ++ pyTest ++ rustTest
+  lspecEachIO [refTest ++ pyTest ++ rustTest] pure

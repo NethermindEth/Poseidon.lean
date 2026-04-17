@@ -152,4 +152,4 @@ def main : IO UInt32 := do
   IO.println "-------------------------------"
   IO.println "Testing round number generation"
   IO.println "-------------------------------"
-  lspecIO $ refTest ++ pyTest /- ++ rustTest -/
+  lspecEachIO [refTest ++ pyTest /- ++ rustTest -/] pure
