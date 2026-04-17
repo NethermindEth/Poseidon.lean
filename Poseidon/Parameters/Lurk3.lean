@@ -17,7 +17,7 @@ def hashProfile : HashProfile := {
   partRounds := 56
 }
 
-def MDS : Array $ Array (Zmod hashProfile.p) := 
+def MDS : Array $ Array (ZMod hashProfile.p) := 
 #[#[0x3000000000000000000000000000000019b4f2bd072f7ea629353058c0000001,
     0x19999999999999999999999999999999a74f7064d0a1dd256b4f914066666667,
     0x3555555555555555555555555555555571e57f7cb2a68cb89f906e9b80000001,
@@ -35,7 +35,7 @@ def MDS : Array $ Array (Zmod hashProfile.p) :=
     0x38e38e38e38e38e38e38e38e38e38e390205dd51cfa0961a43cd42c800000001,
     0x2ccccccccccccccccccccccccccccccce4cb04b06d1b43017bcb3e30b3333334]]
 
-def roundConstants : Array (Zmod hashProfile.p):= 
+def roundConstants : Array (ZMod hashProfile.p):= 
 #[0x307afe4a167ba0d1d93f60f15346bda015fa08615bc785bd204aee1741264d5,
   0x181b9f96bd7efa33178ba5316e4441a392c2bb1e0d5437a8ff1613f5997cc4cf,
   0xe09bd2528ba0b94d6ed86121aa48abf769d47c65138c5993a573528d2f09837,

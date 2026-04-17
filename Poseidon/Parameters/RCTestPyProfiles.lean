@@ -1,6 +1,5 @@
 import Poseidon.Profile
 import YatimaStdLib.YatimaMatrix
-import YatimaStdLib.Zmod
 
 /-!
 # Python round constant test parameters
@@ -21,7 +20,7 @@ def pyProfile64 : HashProfile := {
   partRounds := 41
 }
 
-def py64RC : Array (Zmod pyProfile64.p) := 
+def py64RC : Array (ZMod pyProfile64.p) := 
 #[0xa874f1651194bf2, 0x8a33ea4b1d922d96, 0x11badd07168d87d1, 0xefc1185fe235753a,
   0x75711475cef37a6b, 0xfe2018febde04894, 0xcd5093e1c9d8c8ff, 0xd0b64f6fbd9e75c,
   0xbc6efcefe1fbd9e0, 0xeb0954505ee0940f, 0x68fa4d1c34c293a1, 0x4f1e19dcf109ce22,
@@ -143,7 +142,7 @@ def pyProfile255 : HashProfile := {
   partRounds := 57
 }
 
-def py255RC : Array (Zmod pyProfile255.p) := 
+def py255RC : Array (ZMod pyProfile255.p) := 
  #[0x6ce90d12c4045fe08c3caddb776dd84ac52b4ae7e48cd49443984154f2f4c2f9,
    0x0ccd9b480c84022b25a75b52c8e89d80b4fa6378d32e58f3a175504940bcec39,
    0x513ad11016ab7bb8c7ce9ae51256040e062487edf7168d206ba1b86dfe963629,

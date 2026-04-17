@@ -2,7 +2,6 @@ import Mathlib
 import Poseidon.Profile
 import Poseidon.MDS
 import Poseidon.RoundConstants
-import YatimaStdLib.Zmod
 import YatimaStdLib.YatimaMatrix
 import YatimaStdLib.Monad
 

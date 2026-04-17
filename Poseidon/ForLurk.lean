@@ -26,14 +26,14 @@ def Context4 : Hash.Context Lurk4.hashProfile :=
 The hashing function used by Lurk for commitments that uses pre-initialized Lurk parameters and
 constants
 -/
-def hash3 (f₁ f₂ f₃ : Zmod p) : Zmod p :=
+def hash3 (f₁ f₂ f₃ : ZMod p) : ZMod p :=
   Poseidon.hash Lurk3.hashProfile Context3 #[f₁, f₂, f₃] .merkleTree
 
 /--
 The hashing function used by Lurk that uses pre-initialized Lurk parameters and
 constants.
 -/
-def hash4 (f₁ f₂ f₃ f₄ : Zmod p) : Zmod p :=
+def hash4 (f₁ f₂ f₃ f₄ : ZMod p) : ZMod p :=
   Poseidon.hash Lurk4.hashProfile Context4 #[f₁, f₂, f₃, f₄] .merkleTree
 
 end Poseidon.Lurk
@@ -42,16 +42,16 @@ namespace Poseidon2.Lurk
 
 open BabyBear (p)
 
-def hash24 (input : Array (Zmod p)) : Array (Zmod p) :=
+def hash24 (input : Array (ZMod p)) : Array (ZMod p) :=
   Poseidon2.hashInputWithCtx BabyBear24.hashProfile BabyBear24.lurkContext input
 
-def hash32 (input : Array (Zmod p)) : Array (Zmod p) :=
+def hash32 (input : Array (ZMod p)) : Array (ZMod p) :=
   Poseidon2.hashInputWithCtx BabyBear32.hashProfile BabyBear32.lurkContext input
 
-def hash40 (input : Array (Zmod p)) : Array (Zmod p) :=
+def hash40 (input : Array (ZMod p)) : Array (ZMod p) :=
   Poseidon2.hashInputWithCtx BabyBear40.hashProfile BabyBear40.lurkContext input
 
-def hash48 (input : Array (Zmod p)) : Array (Zmod p) :=
+def hash48 (input : Array (ZMod p)) : Array (ZMod p) :=
   Poseidon2.hashInputWithCtx BabyBear48.hashProfile BabyBear48.lurkContext input
 
 end Poseidon2.Lurk

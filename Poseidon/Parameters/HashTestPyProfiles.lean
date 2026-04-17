@@ -1,7 +1,6 @@
 import Poseidon.Hash
 import Poseidon.Profile
 import YatimaStdLib.YatimaMatrix
-import YatimaStdLib.Zmod
 
 /-!
 # Python hashing test parameters
@@ -24,7 +23,7 @@ def pyProfile254 : HashProfile := {
 
 namespace pyProfile254
 
-def roundConstants : Vector' (Zmod pyProfile254.p) := 
+def roundConstants : Vector' (ZMod pyProfile254.p) := 
 #[0x0ee9a592ba9a9518d05986d656f40c2114c4993c11bb29938d21d47304cd8e6e,
   0x00f1445235f2148c5986587169fc1bcd887b08d4d00868df5696fff40956e864,
   0x08dff3487e8ac99e1f29a058d0fa80b930c728730b7ab36ce879f3890ecf73f5,
@@ -221,7 +220,7 @@ def roundConstants : Vector' (Zmod pyProfile254.p) :=
   0x216f6717bbc7dedb08536a2220843f4e2da5f1daa9ebdefde8a5ea7344798d22,
   0x1da55cc900f0d21f4a3e694391918a1b3c23b2ac773c6b3ef88e2e4228325161]
 
-def MDS : YatimaMatrix (Zmod pyProfile254.p) := 
+def MDS : YatimaMatrix (ZMod pyProfile254.p) := 
 #[#[0x109b7f411ba0e4c9b2b70caf5c36a7b194be7c11ad24378bfedb68592ba8118b,
     0x16ed41e13bb9c0c66ae119424fddbcbc9314dc9fdbdeea55d6c64543dc4903e0,
     0x2b90bba00fca0589f617e7dcbfe82e0df706ab640ceb247b791a93b74e36736d],
@@ -247,7 +246,7 @@ def pyProfile255 : HashProfile := {
 
 namespace pyProfile255
 
-def roundConstants : Vector' (Zmod pyProfile255.p) :=
+def roundConstants : Vector' (ZMod pyProfile255.p) :=
 #[0x5ee52b2f39e240a4006e97a15a7609dce42fa9aa510d11586a56db98fa925158,
   0x3e92829ce321755f769c6fd0d51e98262d7747ad553b028dbbe98b5274b9c8e1,
   0x7067b2b9b65af0519cef530217d4563543852399c2af1557fcd9eb325b5365e4,
@@ -589,7 +588,7 @@ def roundConstants : Vector' (Zmod pyProfile255.p) :=
   0x207c7c32631a75fe8e0da895367176d24e32c5573ec91acf235f3c6c307807cd,
   0x20f955773b13b160d3575eb2380b466f7d38cb4a0e12a15d43d147645c3944ca]
 
-def MDS : YatimaMatrix (Zmod pyProfile255.p) :=
+def MDS : YatimaMatrix (ZMod pyProfile255.p) :=
 #[#[0x354423b163d1078b0dd645be56316e34a9b98e52dcf9f469be44b108be46c107,
     0x44778737e8bc1154aca1cd92054a1e5b83808403705f7d54da88bbd1920e1053,
     0x5872eefb5ab6b2946556524168a2aebb69afd513a2fff91e50167b1f6e4055e0,

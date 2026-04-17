@@ -25,7 +25,7 @@ def hashProfile : HashProfile := {
   partRounds := 56
 }
 
-def MDS : YatimaMatrix (Zmod hashProfile.p):= 
+def MDS : YatimaMatrix (ZMod hashProfile.p):= 
 #[#[0x19999999999999999999999999999999a74f7064d0a1dd256b4f914066666667,
     0x3555555555555555555555555555555571e57f7cb2a68cb89f906e9b80000001,
     0x24924924924924924924924924924924a5df32d92a0bce3574bacf8092492493,
@@ -52,7 +52,7 @@ def MDS : YatimaMatrix (Zmod hashProfile.p):=
     0x3aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaca160c3c5e1d9acb15ebacde40000001,
     0x27627627627627627627627627627627778de7fd8fbdf1c36a0441ecec4ec4ed]]
 
-def roundConstants : Array (Zmod hashProfile.p):= 
+def roundConstants : Array (ZMod hashProfile.p):= 
 #[0x3c8b831256b341d54b67d50f8fc3809ba701dafba05b89a271029f031d96cabc,
   0x167a20b0469ec356267695fc87eaa379ab9d3e169b61fc293bb22da2a5c0c551,
   0x1f348b984797e77b386e89b40070a25b747fbdacb45d3546f0809f5d872a5f50,

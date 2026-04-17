@@ -1,7 +1,6 @@
 import Poseidon.Hash
 import Poseidon.Profile
 import YatimaStdLib.YatimaMatrix
-import YatimaStdLib.Zmod
 
 /-!
 # Parameters for PermX5_255_3 Profile
@@ -26,7 +25,7 @@ def PermX5_255_3 : HashProfile := {
 
 namespace PermX5_255_3
 
-def MDS : YatimaMatrix (Zmod PermX5_255_3.p) := YatimaMatrix.transpose 
+def MDS : YatimaMatrix (ZMod PermX5_255_3.p) := YatimaMatrix.transpose 
 #[#[0x3d955d6c02fe4d7cb500e12f2b55eff668a7b4386bd27413766713c93f2acfcd,
     0x3798866f4e6058035dcf8addb2cf1771fac234bcc8fc05d6676e77e797f224bf,
     0x2c51456a7bf2467eac813649f3f25ea896eac27c5da020dae54a6e640278fda2],
@@ -37,7 +36,7 @@ def MDS : YatimaMatrix (Zmod PermX5_255_3.p) := YatimaMatrix.transpose
     0x0455ebf862f0b60f69698e97d36e8aafd4d107cae2b61be1858b23a3363642e0,
     0x569e2c206119e89455852059f707370e2c1fc9721f6c50991cedbbf782daef54]]
 
-def roundConstants : Array (Zmod PermX5_255_3.p) := 
+def roundConstants : Array (ZMod PermX5_255_3.p) := 
 #[0x6c4ffa723eaf1a7bf74905cc7dae4ca9ff4a2c3bc81d42e09540d1f250910880,
   0x54dd837eccf180c92c2f53a3476e45a156ab69a403b6b9fdfd8dd970fddcdd9a,
   0x64f56d735286c35f0e7d0a29680d49d54fb924adccf8962eeee225bf9423a85e,

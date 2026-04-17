@@ -9,8 +9,8 @@ The main function of this implementation is `Poseidon.hash` found in `Poseidon.H
 ```lean
 def hash (prof : HashProfile) 
          (context : Hash.Context prof)
-         (preimage : Array (Zmod prof.p)) 
-         (domain : Domain) : Zmod prof.p
+         (preimage : Array (ZMod prof.p)) 
+         (domain : Domain) : ZMod prof.p
 ```
 
 The parameters to the function can be briefly described as follows:
@@ -18,7 +18,7 @@ The parameters to the function can be briefly described as follows:
 * `HashProfile` : Contains the parameters prime `p`, width `t`, security parameters `M`, and S-box exponent `a`
 * `Hash.Context` : Contains the necessary parameters to compute the Poseidon hash, in particular
   the MDS matrix and the array of round constants.
-* `Array (Zmod profile.p)` : The message to hash. If the length of the array does not match the specified arity
+* `Array (ZMod profile.p)` : The message to hash. If the length of the array does not match the specified arity
   a dummy value of `0` is returned
 * `Domain` : The domain in which to hash the function. Right now it is either a fixed-arity Merkle tree hash
   or fixed length input. 
@@ -32,7 +32,7 @@ For Lurk specific hashing purposes, the `Poseidon.ForLurk` module contains
 ```lean
 namespace Poseidon.Lurk
 
-abbrev F := Zmod Lurk.Profile.p
+abbrev F := ZMod Lurk.Profile.p
 
 def Context : Hash.Context Profile :=
   ⟨Lurk.MDS, Lurk.roundConstants⟩
