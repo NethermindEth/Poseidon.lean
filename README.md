@@ -12,7 +12,7 @@ For details about the implementation of the Poseidon hash, please see the [origi
 
 ### Usage
 
-For the Poseidon 2 permutation, two widths (16 and 24) are supported.
+For the Poseidon 2 permutation, two widths (16 and 24) have been tested against other Poseidon 2 implementations.
 
 To see examples of the usage of Poseidon 2, please see [Tests/Poseidon2.lean](./Tests/Poseidon2.lean).
 
