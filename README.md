@@ -1,82 +1,32 @@
-# Lean 4 Poseidon implementation
+# Lean 4 Poseidon and Poseidon 2 implementation
 
-This repository contains an implementation of the Poseidon hash function in Lean 4.
+This repository contains an implementation of the Poseidon and Poseidon 2 hash functions in Lean 4.
 
-## Usage
+This is a fork of [argumentcomputer/Poseidon.lean](https://github.com/argumentcomputer/Poseidon.lean) by the [Argument Computer Corporation](https://github.com/argumentcomputer) (used under the MIT license) with minor changes, in particular to the round constants and other parameters to the Poseidon 2 permutation as well as some additional tests of the Poseidon 2 permutation.
 
-The main function of this implementation is `Poseidon.hash` found in `Poseidon.HashImpl`. The function has signature:
+## Poseidon
 
-```lean
-def hash (prof : HashProfile) 
-         (context : Hash.Context prof)
-         (preimage : Array (Zmod prof.p)) 
-         (domain : Domain) : Zmod prof.p
+For details about the implementation of the Poseidon hash, please see the [original README from upstream](https://github.com/argumentcomputer/Poseidon.lean/blob/main/README.md), copied here as [README-original](./README-original.md).
+
+## Poseidon 2
+
+### Usage
+
+For the Poseidon 2 permutation, two widths (16 and 24) are supported.
+
+To see examples of the usage of Poseidon 2, please see [Tests/Poseidon2.lean](./Tests/Poseidon2.lean).
+
+For example, to calculate the hash of `[0..15]` we can run:
+
+```
+#eval Poseidon2.hashInputWithCtx BabyBear16.hashProfile BabyBear16.lurkContext #[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 ```
 
-The parameters to the function can be briefly described as follows:
+### Tests
 
-* `HashProfile` : Contains the parameters prime `p`, width `t`, security parameters `M`, and S-box exponent `a`
-* `Hash.Context` : Contains the necessary parameters to compute the Poseidon hash, in particular
-  the MDS matrix and the array of round constants.
-* `Array (Zmod profile.p)` : The message to hash. If the length of the array does not match the specified arity
-  a dummy value of `0` is returned
-* `Domain` : The domain in which to hash the function. Right now it is either a fixed-arity Merkle tree hash
-  or fixed length input. 
+The Poseidon 2 tests compare the output of the hash with a version of [Poseidon 2 from the Plonky3 repo](https://github.com/NethermindEth/Plonky3/tree/Dom/extraction_deliverable/poseidon2) (that is different from the AIR version) and a slightly-modified version of the [HorizenLabs implementation of Poseidon 2](https://github.com/NethermindEth/HorizenLabs-poseidon2/). These tests can be run by:
 
-The output is the result of the hash (the second component of the final vector, consistent with the 
-Filecoin specification.)
-
-Pre-computed profiles and contexts are available in the `Poseidon.Parameters` folder.
-
-For Lurk specific hashing purposes, the `Poseidon.ForLurk` module contains 
-```lean
-namespace Poseidon.Lurk
-
-abbrev F := Zmod Lurk.Profile.p
-
-def Context : Hash.Context Profile :=
-  ⟨Lurk.MDS, Lurk.roundConstants⟩
-
-def hash (f₁ f₂ f₃ f₄ : F) : F :=
-  Poseidon.hash Profile Context #[f₁, f₂, f₃, f₄] .merkleTree
-```
-which computes the arity 4 hashes found in the [lurk-rs](https://github.com/lurk-lang/lurk-rs/). 
-
-### Generating new profiles
-
-Also included in the repository are round number, and round constant generators to generate profiles
-and contexts from an input set of parameters. The generated constants and MDS matrices are consistent
-with the [Filecoin specification](https://spec.filecoin.io/algorithms/crypto/poseidon/).
-
-## Comparison with other implementations
-
-The aim of this Lean 4 implementation is to maintain consistency with the other major implementations
-of the Poseidon hashing protocol. In particular
-
-* [Reference implementation](https://github.com/filecoin-project/neptune)
-* [Filecoin rust implementation](https://github.com/filecoin-project/neptune)
-* [Python implementation](https://github.com/ingonyama-zk/poseidon-hash)
-
-This is achieved through the test suite described below, and writing the core algorithm agnostic to
-implementation details.
-
-## Tests
-
-This repository contains a robust suite of tests that checks that the hashing, round constant
-generation, and round number generation match those found in the other implementations.
-
-The test suite contains and expands on the tests in the reference, Python, and Filecoin/rust 
-implementations. See the corresponding test in the `Tests` folder to find more about what is being
-tested and how the tests were generated.
-
-Included in the test suite are tests that check the parameters contained in the pre-computed profiles
-match those that would be computed according to the relevant specification in which they are defined.
-
-### Poseidon 2 Tests
-
-The Poseidon 2 tests compare the output of the hash with a version of the HorizenLabs implementation of Poseidon 2 and a version of Poseidon 2 from the Plonky3 repo (that is different from the AIR version). These tests can be run by:
-
-  1. Running `nix-shell` or `nix develop` (ensure Nix is installed, with flakes support for `nix develop`, see https://nixos.org). Alternatively, ensure dependencies equivalent to `buildInputs` in flake.nix are installed.
+  1. Running `nix-shell` or `nix develop` (ensure Nix is installed, with flakes support for `nix develop`, see https://nixos.org). Alternatively, ensure dependencies equivalent to `buildInputs` in `flake.nix` are installed.
   2. Optionally, run `lake exe cache get` to speed up the build using the precompiled files for the dependency Mathlib.
   3. Running `./poseidon2Tests.sh` (first check that `../TestingPoseidon2Spec` does not already exist).
 
